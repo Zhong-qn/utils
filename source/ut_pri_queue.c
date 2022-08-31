@@ -33,11 +33,11 @@ struct pri_queue {
 };
 
 
-static errno_t __queue_pop(ut_pri_queue_t* pri_queue, void** pdata, int32_t timeout);
+static ut_errno_t __queue_pop(ut_pri_queue_t* pri_queue, void** pdata, int32_t timeout);
 
 static void __heap_sort(inn_heap_t *heap, int32_t index);
 static void* __heap_remove(inn_heap_t *heap, int32_t index);
-static errno_t __heap_push(inn_heap_t *heap, void* data);
+static ut_errno_t __heap_push(inn_heap_t *heap, void* data);
 static void* __heap_pop(inn_heap_t *heap);
 static void* __heap_peek(inn_heap_t *heap);
 
@@ -84,9 +84,9 @@ _free:
     goto _out;
 }
 
-errno_t ut_pri_queue_destroy(ut_pri_queue_t *pri_queue)
+ut_errno_t ut_pri_queue_destroy(ut_pri_queue_t *pri_queue)
 {
-    errno_t     retval = UT_ERRNO_INVALID;
+    ut_errno_t     retval = UT_ERRNO_INVALID;
 
     if (pri_queue != NULL) {
         pthread_mutex_destroy(&pri_queue->mutex);
@@ -106,9 +106,9 @@ errno_t ut_pri_queue_destroy(ut_pri_queue_t *pri_queue)
 }
 
 
-errno_t ut_pri_queue_peek(ut_pri_queue_t * pri_queue, void** pdata)
+ut_errno_t ut_pri_queue_peek(ut_pri_queue_t * pri_queue, void** pdata)
 {
-    errno_t     retval = UT_ERRNO_OK;
+    ut_errno_t     retval = UT_ERRNO_OK;
 
     if (pri_queue == NULL || pdata == NULL) {
         retval = UT_ERRNO_INVALID;
@@ -133,9 +133,9 @@ _out:
     return retval;
 }
 
-errno_t ut_pri_queue_push(ut_pri_queue_t * pri_queue, void* data)
+ut_errno_t ut_pri_queue_push(ut_pri_queue_t * pri_queue, void* data)
 {
-    errno_t     retval = UT_ERRNO_OK;
+    ut_errno_t     retval = UT_ERRNO_OK;
 
     if(pri_queue == NULL || data == NULL) {
         retval = UT_ERRNO_INVALID;
@@ -165,7 +165,7 @@ _out:
     return retval;
 }
 
-errno_t ut_pri_queue_pop_wait(ut_pri_queue_t *pri_queue, void* *pdata)
+ut_errno_t ut_pri_queue_pop_wait(ut_pri_queue_t *pri_queue, void* *pdata)
 {
     if (pri_queue == NULL || pdata == NULL) {
         return UT_ERRNO_INVALID;
@@ -174,7 +174,7 @@ errno_t ut_pri_queue_pop_wait(ut_pri_queue_t *pri_queue, void* *pdata)
     return __queue_pop(pri_queue, pdata, -1);
 }
 
-errno_t ut_pri_queue_pop_trywait(ut_pri_queue_t *pri_queue, void* *pdata)
+ut_errno_t ut_pri_queue_pop_trywait(ut_pri_queue_t *pri_queue, void* *pdata)
 {
     if (pri_queue == NULL || pdata == NULL) {
         return UT_ERRNO_INVALID;
@@ -183,7 +183,7 @@ errno_t ut_pri_queue_pop_trywait(ut_pri_queue_t *pri_queue, void* *pdata)
     return __queue_pop(pri_queue, pdata, 0);
 }
 
-errno_t ut_pri_queue_pop_timedwait(ut_pri_queue_t *pri_queue, void* *pdata, int32_t timeout)
+ut_errno_t ut_pri_queue_pop_timedwait(ut_pri_queue_t *pri_queue, void* *pdata, int32_t timeout)
 {
     if (pri_queue == NULL || pdata == NULL || timeout < 0) {
         return UT_ERRNO_INVALID;
@@ -208,9 +208,9 @@ int32_t ut_pri_queue_get_size(const ut_pri_queue_t *pri_queue)
  * @param [in] pri_queue 优先级队列
  * @param [out] pdata 二级指针，取出数据
  * @param [in] timeout 超时时间，毫秒（ms）
- * @retval errno_t 
+ * @retval ut_errno_t 
  */
-static errno_t __queue_pop(ut_pri_queue_t *pri_queue, void* *pdata, int32_t timeout)
+static ut_errno_t __queue_pop(ut_pri_queue_t *pri_queue, void* *pdata, int32_t timeout)
 {
     int32_t         retval = UT_ERRNO_OK;
     struct timespec tm;
@@ -246,11 +246,11 @@ static errno_t __queue_pop(ut_pri_queue_t *pri_queue, void* *pdata, int32_t time
  * 将数据存入堆中
  * @param [in] heap 堆指针
  * @param [in] data 存入的数据
- * @retval errno_t 
+ * @retval ut_errno_t 
  */
-static errno_t __heap_push(inn_heap_t *heap, void* data)
+static ut_errno_t __heap_push(inn_heap_t *heap, void* data)
 {
-    errno_t     retval = UT_ERRNO_OK;
+    ut_errno_t     retval = UT_ERRNO_OK;
     heap_element_t  *new_elem = NULL;
 
     if (heap->cur_size >= heap->max_size) {

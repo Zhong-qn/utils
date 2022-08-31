@@ -48,9 +48,9 @@ typedef ut_bool_t (*ut_hash_cb)(const char *key, const void* value, void* contex
  * @param [out] pht 传出参数
  * @param [in] size 创建的哈希表的bucket大小
  * @param [in] ut_hash_func 计算哈希值的哈希函数，如果传入NULL则会使用内置的默认哈希函数
- * @return errno_t 
+ * @return ut_errno_t 
  */
-errno_t ut_hash_create(ut_hash_t **pht, uint32_t size, ut_hash_func ut_hash_func);
+ut_errno_t ut_hash_create(ut_hash_t **pht, uint32_t size, ut_hash_func ut_hash_func);
 
 
 /**
@@ -58,7 +58,7 @@ errno_t ut_hash_create(ut_hash_t **pht, uint32_t size, ut_hash_func ut_hash_func
  * 
  * @param [in] ht 待销毁的哈希表
  */
-errno_t ut_hash_destroy(ut_hash_t *ht);
+ut_errno_t ut_hash_destroy(ut_hash_t *ht);
 
 /**
  * @brief 将一个数据以及与他相关联的键组成一个键值对放进哈希表中

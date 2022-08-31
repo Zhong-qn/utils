@@ -11,9 +11,9 @@
 #include "ut_msg.h"
 
 
-errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock)
+ut_errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock)
 {
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
     ut_msg_t        msg_header = {0};
     char*           str_msg = NULL;
     ssize_t         readlen = 0;
@@ -38,12 +38,12 @@ TAG_OUT:
     return retval;
 }
 
-errno_t ut_msg_send_by_socket(ut_msg_t* msg, ut_socket_t* sock)
+ut_errno_t ut_msg_send_by_socket(ut_msg_t* msg, ut_socket_t* sock)
 {
     return ut_socket_msg_send(sock, msg, MSG_SIZE(msg));
 }
 
-errno_t msg_read_from_socket_trywait(ut_msg_t** msg, ut_socket_t* sock)
+ut_errno_t msg_read_from_socket_trywait(ut_msg_t** msg, ut_socket_t* sock)
 {
     return UT_ERRNO_OK;
 }

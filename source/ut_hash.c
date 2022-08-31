@@ -89,11 +89,11 @@ static void __expand_array(ut_hash_t *hash_table)
 }
 
 
-errno_t ut_hash_create(ut_hash_t **out, uint32_t size, ut_hash_func ut_hash_func)
+ut_errno_t ut_hash_create(ut_hash_t **out, uint32_t size, ut_hash_func ut_hash_func)
 {
     uint32_t    max_size = 0;
     ut_hash_t*  hash_table = NULL;
-    errno_t  retval = UT_ERRNO_OK;
+    ut_errno_t  retval = UT_ERRNO_OK;
 
     CHECK_PTR_RET(out, retval, UT_ERRNO_NULLPTR);
     CHECK_VAL_EQ(size < 0, UT_TRUE, retval = UT_ERRNO_INVALID, TAG_OUT);
@@ -126,9 +126,9 @@ TAG_OUT:
 }
 
 
-errno_t ut_hash_destroy(ut_hash_t *hash_table)
+ut_errno_t ut_hash_destroy(ut_hash_t *hash_table)
 {
-    errno_t          retval = UT_ERRNO_OK;
+    ut_errno_t          retval = UT_ERRNO_OK;
     hash_entry_t*    entry = NULL;
 
     CHECK_PTR_RET(hash_table, retval, UT_ERRNO_NULLPTR);

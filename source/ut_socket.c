@@ -47,11 +47,11 @@ static void __udp_reg_callback(ut_fd_t fd, void* context);
 static void __udp_reg_callback2(ut_fd_t fd, void* context);
 
 
-errno_t ut_socket_create(ut_socket_t** out, in_addr_t local_addr, in_port_t local_port, ut_trans_mode_t mode, const char* bind_if)
+ut_errno_t ut_socket_create(ut_socket_t** out, in_addr_t local_addr, in_port_t local_port, ut_trans_mode_t mode, const char* bind_if)
 {
     ut_socket_t*        new = NULL;
     struct ifreq        ifr = {0};
-    errno_t          retval = UT_ERRNO_OK;
+    ut_errno_t          retval = UT_ERRNO_OK;
     int32_t             tmpval = 0;
 
     CHECK_PTR_RET(out, retval, UT_ERRNO_NULLPTR);
@@ -60,7 +60,7 @@ errno_t ut_socket_create(ut_socket_t** out, in_addr_t local_addr, in_port_t loca
     CHECK_PTR_RET(*out, retval, UT_ERRNO_OUTOFMEM);
     new = *out;
 
-    new->fd = socket(AF_INET, mode, mode == SOCK_TRANS_UDP ? IPPROTO_UDP : IPPROTO_TCP);
+    new->fd = socket(AF_INET, mode, mode == UT_TRANS_UDP ? IPPROTO_UDP : IPPROTO_TCP);
     CHECK_VAL_EQ(new->fd < 0, UT_TRUE, retval = UT_ERRNO_UNKNOWN, TAG_ERR);
 
     new->trans_mode = mode;
@@ -100,18 +100,18 @@ TAG_ERR:
     goto TAG_OUT;
 }
 
-errno_t ut_socket_destroy(ut_socket_t* sock)
+ut_errno_t ut_socket_destroy(ut_socket_t* sock)
 {
-    errno_t          retval = UT_ERRNO_OK;
+    ut_errno_t          retval = UT_ERRNO_OK;
 
     CHECK_PTR_RET(sock, retval, UT_ERRNO_NULLPTR);
 
     /* 如果是TCP模式，直接关闭fd */
-    if (sock->trans_mode == SOCK_TRANS_TCP) {
+    if (sock->trans_mode == UT_TRANS_TCP) {
         close(sock->fd);
 
     /* 如果是UDP模式 */
-    } else if (sock->trans_mode == SOCK_TRANS_UDP) {
+    } else if (sock->trans_mode == UT_TRANS_UDP) {
         /* 如果是create创建出来的socket，关闭 */
         if (sock->fd > 0) {
             close(sock->fd);
@@ -151,9 +151,9 @@ TAG_OUT:
     return retval;
 }
 
-errno_t ut_socket_connect(ut_socket_t* sock, ut_select_engine_t* engine, in_addr_t remote_addr, in_port_t remote_port)
+ut_errno_t ut_socket_connect(ut_socket_t* sock, ut_select_engine_t* engine, in_addr_t remote_addr, in_port_t remote_port)
 {
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
 
     CHECK_PTR_RET(sock, retval, UT_ERRNO_NULLPTR);
 
@@ -162,14 +162,14 @@ errno_t ut_socket_connect(ut_socket_t* sock, ut_select_engine_t* engine, in_addr
     sock->st_remote_addr.sin_port = remote_port;
 
     /* 如果是TCP模式，还需要进行三次握手 */
-    if (sock->trans_mode == SOCK_TRANS_TCP) {
+    if (sock->trans_mode == UT_TRANS_TCP) {
         if (connect(sock->fd, (struct sockaddr*)&sock->st_remote_addr, sizeof(struct sockaddr_in)) < 0) {
             retval = UT_ERRNO_UNKNOWN;
             goto TAG_OUT;
         }
 
     /* 如果是UDP模式 */
-    } else if (sock->trans_mode == SOCK_TRANS_UDP) {
+    } else if (sock->trans_mode == UT_TRANS_UDP) {
         /* 首次调用，还未注册到select engine */
         if (!sock->diff.udp.registered) {
             pipe(sock->diff.udp.pipe);   /* 这个管道用于接收数据时存放的位置 */
@@ -189,14 +189,14 @@ TAG_OUT:
     return retval;
 }
 
-errno_t ut_socket_set_max_accept(ut_socket_t* sock, int32_t num)
+ut_errno_t ut_socket_set_max_accept(ut_socket_t* sock, int32_t num)
 {
-    errno_t          retval = UT_ERRNO_OK;
+    ut_errno_t          retval = UT_ERRNO_OK;
 
     CHECK_PTR_RET(sock, retval, UT_ERRNO_NULLPTR);
     CHECK_VAL_EQ(num <= 0, UT_TRUE, retval = UT_ERRNO_INVALID, TAG_OUT);
     sock->max_num = num;
-    if (sock->trans_mode == SOCK_TRANS_TCP) {
+    if (sock->trans_mode == UT_TRANS_TCP) {
         listen(sock->fd, num*2);
     }
 
@@ -204,9 +204,9 @@ TAG_OUT:
     return retval;
 }
 
-errno_t ut_socket_accept(ut_socket_t** out, ut_socket_t* sock, ut_select_engine_t* engine)
+ut_errno_t ut_socket_accept(ut_socket_t** out, ut_socket_t* sock, ut_select_engine_t* engine)
 {
-    errno_t          retval = UT_ERRNO_OK;
+    ut_errno_t          retval = UT_ERRNO_OK;
     ut_socket_t*        accepted_sock = NULL;
     ut_socket_t         tmp_sock;
     struct sockaddr_in  tmp_addr;
@@ -217,7 +217,7 @@ errno_t ut_socket_accept(ut_socket_t** out, ut_socket_t* sock, ut_select_engine_
     CHECK_PTR_RET(engine, retval, UT_ERRNO_NULLPTR);
 
     switch (sock->trans_mode) {
-        case SOCK_TRANS_TCP:
+        case UT_TRANS_TCP:
         {
             socklen_t   socklen;
 
@@ -237,7 +237,7 @@ errno_t ut_socket_accept(ut_socket_t** out, ut_socket_t* sock, ut_select_engine_
 
             break;
         }
-        case SOCK_TRANS_UDP:
+        case UT_TRANS_UDP:
         {
             char        addrbuffer[UT_LEN_32] = {0};
             size_t      readlen = 0;
@@ -289,9 +289,9 @@ ut_fd_t ut_socket_read_fd_get(const ut_socket_t* sock)
     }
 
     switch (sock->trans_mode) {
-        case SOCK_TRANS_TCP:
+        case UT_TRANS_TCP:
             return sock->fd;
-        case SOCK_TRANS_UDP:
+        case UT_TRANS_UDP:
             if (PIPE_RD_FD(sock->diff.udp.pipe) > 0) {
                 return PIPE_RD_FD(sock->diff.udp.pipe);
             } else {
@@ -302,19 +302,19 @@ ut_fd_t ut_socket_read_fd_get(const ut_socket_t* sock)
     }
 }
 
-errno_t ut_socket_msg_send(ut_socket_t* sock, const void* msg, size_t msg_size)
+ut_errno_t ut_socket_msg_send(ut_socket_t* sock, const void* msg, size_t msg_size)
 {
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
     ssize_t         sendlen = 0;
 
     CHECK_PTR_RET(sock, retval, UT_ERRNO_NULLPTR);
     CHECK_PTR_RET(msg, retval, UT_ERRNO_NULLPTR);
 
     switch (sock->trans_mode) {
-        case SOCK_TRANS_TCP:
+        case UT_TRANS_TCP:
             sendlen = send(sock->fd, msg, msg_size, 0);
             break;
-        case SOCK_TRANS_UDP:
+        case UT_TRANS_UDP:
         {
             ut_fd_t     fd = 0;
 
@@ -346,9 +346,9 @@ TAG_OUT:
     return retval;
 }
 
-errno_t ut_socket_msg_recv(ut_socket_t* sock, void* msg, size_t msg_size, ssize_t* actual_size)
+ut_errno_t ut_socket_msg_recv(ut_socket_t* sock, void* msg, size_t msg_size, ssize_t* actual_size)
 {
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
     int32_t         block_flag = 0;
 
     CHECK_PTR_RET(sock, retval, UT_ERRNO_NULLPTR);
@@ -359,10 +359,10 @@ errno_t ut_socket_msg_recv(ut_socket_t* sock, void* msg, size_t msg_size, ssize_
     }
 
     switch (sock->trans_mode) {
-        case SOCK_TRANS_TCP:
+        case UT_TRANS_TCP:
             *actual_size = recv(sock->fd, msg, msg_size, block_flag);
             break;
-        case SOCK_TRANS_UDP:
+        case UT_TRANS_UDP:
             *actual_size = read(ut_socket_read_fd_get(sock), msg, msg_size);
             break;
         default:
@@ -380,18 +380,18 @@ TAG_OUT:
     return retval;
 }
 
-errno_t ut_socket_set_block(ut_socket_t* sock, ut_bool_t block)
+ut_errno_t ut_socket_set_block(ut_socket_t* sock, ut_bool_t block)
 {
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
 
     CHECK_PTR_RET(sock, retval, UT_ERRNO_NULLPTR);
 
     sock->non_block = !block;
     switch (sock->trans_mode) {
-        case SOCK_TRANS_TCP:
+        case UT_TRANS_TCP:
             fd_block(sock->fd, block);
             break;
-        case SOCK_TRANS_UDP:
+        case UT_TRANS_UDP:
             if (PIPE_RD_FD(sock->diff.udp.pipe)) {
                 fd_block(PIPE_RD_FD(sock->diff.udp.pipe), block);
             }
@@ -446,7 +446,7 @@ static void __udp_reg_callback(ut_fd_t fd, void* context)
         ut_socket_t     new_sock = {0};
 
         CR_LOG_DEBUG("new connection!\n");
-        new_sock.trans_mode = SOCK_TRANS_UDP;
+        new_sock.trans_mode = UT_TRANS_UDP;
         new_sock.diff.udp.belong_to = sock;
         pipe(new_sock.diff.udp.pipe);       /* 创建消息管道 */
         new_sock.fd = -1;                   /* UDP通过管道来获取来自相同远端的信息 */

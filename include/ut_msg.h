@@ -57,18 +57,18 @@ __BEGIN_DECLS
  * 
  * @param msg 读取到的数据内容注意！！！msg必须被free！
  * @param sock 发送使用的socket结构体
- * @return errno_t 
+ * @return ut_errno_t 
  */
-errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock);
+ut_errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock);
 
 /**
  * @brief 通过socket对象发送一段消息
  * 
  * @param msg 待发送的消息
  * @param from_sock 发送使用的socket结构体
- * @return errno_t 
+ * @return ut_errno_t 
  */
-errno_t ut_msg_send_by_socket(ut_msg_t* msg, ut_socket_t* sock);
+ut_errno_t ut_msg_send_by_socket(ut_msg_t* msg, ut_socket_t* sock);
 
 __END_DECLS
 #endif

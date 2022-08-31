@@ -39,50 +39,50 @@ ut_pri_queue_t *ut_pri_queue_create(int32_t initial_size, ut_bool_t size_adaptio
 /**
  * 销毁一个优先级队列
  * @param [in] pri_queue 优先级队列指针优先级队列指针
- * @retval errno_t UT_ERRNO_OK : 成功, 其他失败
+ * @retval ut_errno_t UT_ERRNO_OK : 成功, 其他失败
  */
-errno_t ut_pri_queue_destroy(ut_pri_queue_t *pri_queue);
+ut_errno_t ut_pri_queue_destroy(ut_pri_queue_t *pri_queue);
 
 /**
  * 查看优先级队列首部的数据
  * @param [in] pri_queue 优先级队列指针优先级队列指针
  * @param [in] pdata 保存数据指针的指针
- * @retval errno_t UT_ERRNO_OK : 成功, 其他失败
+ * @retval ut_errno_t UT_ERRNO_OK : 成功, 其他失败
  */
-errno_t ut_pri_queue_peek(ut_pri_queue_t * pri_queue, void** pdata);
+ut_errno_t ut_pri_queue_peek(ut_pri_queue_t * pri_queue, void** pdata);
 
 /**
  * 将数据存入优先级队列
  * @param [in] pri_queue 优先级队列指针优先级队列指针
  * @param data 数据指针
- * @retval errno_t UT_ERRNO_OK : 成功, 其他失败
+ * @retval ut_errno_t UT_ERRNO_OK : 成功, 其他失败
  */
-errno_t ut_pri_queue_push(ut_pri_queue_t * pri_queue, void* data);
+ut_errno_t ut_pri_queue_push(ut_pri_queue_t * pri_queue, void* data);
 
 /**
  * 取出优先级队列的首个数据，如果不存在数据，阻塞等待
  * @param [in] pri_queue 优先级队列指针
  * @param [in] pdata 保存数据指针的指针
- * @retval errno_t UT_ERRNO_OK : 成功, 其他失败
+ * @retval ut_errno_t UT_ERRNO_OK : 成功, 其他失败
  */
-errno_t ut_pri_queue_pop_wait(ut_pri_queue_t *pri_queue, void* *pdata);
+ut_errno_t ut_pri_queue_pop_wait(ut_pri_queue_t *pri_queue, void* *pdata);
 
 /**
  * 取出优先级队列的首个数据，如果不存在数据，直接返回
  * @param [in] pri_queue 优先级队列指针
  * @param [in] pdata 保存数据指针的指针
- * @retval errno_t UT_ERRNO_OK : 成功, 其他失败
+ * @retval ut_errno_t UT_ERRNO_OK : 成功, 其他失败
  */
-errno_t ut_pri_queue_pop_trywait(ut_pri_queue_t *pri_queue, void* *pdata);
+ut_errno_t ut_pri_queue_pop_trywait(ut_pri_queue_t *pri_queue, void* *pdata);
 
 /**
  * 取出优先级队列的首个数据，如果不存在数据，阻塞等待指定时间
  * @param [in] pri_queue 优先级队列指针
  * @param [in] pdata 保存数据指针的指针
  * @param [in] timeout 阻塞等待的时间
- * @retval errno_t UT_ERRNO_OK : 成功, 其他失败
+ * @retval ut_errno_t UT_ERRNO_OK : 成功, 其他失败
  */
-errno_t ut_pri_queue_pop_timedwait(ut_pri_queue_t *pri_queue, void* *pdata, int32_t timeout);
+ut_errno_t ut_pri_queue_pop_timedwait(ut_pri_queue_t *pri_queue, void* *pdata, int32_t timeout);
 
 /**
  * 获取一个优先级队列内还有多少个数据

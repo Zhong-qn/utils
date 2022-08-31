@@ -200,7 +200,7 @@ typedef enum ut_standard_errno_e {
     UT_ERRNO_NULLPTR = -2,    /* 空指针错误 */
     UT_ERRNO_UNKNOWN = -1,    /* 未知的错误 */
     UT_ERRNO_OK = 0,          /* 无错误发生 */
-} errno_t;
+} ut_errno_t;
 
 typedef signed int ut_fd_t;
 typedef signed int ut_socket_fd_t;

@@ -58,13 +58,13 @@ static ut_bool_t __fd_set_foreach(const char *key, const void* value, void* cont
 static ut_bool_t __fd_isset_foreach(const char *key, const void* value, void* context);
 static void __manage_fd_callback(ut_fd_t manage_fd, void* context);
 static void __engine_reload(ut_select_engine_t* engine);
-static errno_t __engine_fd_add(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context, ut_bool_t temporary);
-errno_t __engine_fd_del(ut_select_engine_t* engine, ut_fd_t fd);
+static ut_errno_t __engine_fd_add(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context, ut_bool_t temporary);
+ut_errno_t __engine_fd_del(ut_select_engine_t* engine, ut_fd_t fd);
 
 
-errno_t ut_select_engine_create(ut_select_engine_t **engine)
+ut_errno_t ut_select_engine_create(ut_select_engine_t **engine)
 {
-    errno_t          retval = UT_ERRNO_OK;
+    ut_errno_t          retval = UT_ERRNO_OK;
     ut_select_engine_t  *new_engine = NULL;
 
     if (engine == NULL) {
@@ -108,9 +108,9 @@ _destroy:
     goto _out;
 }
 
-errno_t ut_select_engine_fd_add_forever(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context)
+ut_errno_t ut_select_engine_fd_add_forever(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context)
 {
-    errno_t              retval = UT_ERRNO_OK;
+    ut_errno_t              retval = UT_ERRNO_OK;
 
     if (engine == NULL || callback == NULL || fd < 0) {
         retval = UT_ERRNO_INVALID;
@@ -124,9 +124,9 @@ _out:
     return retval;
 }
 
-errno_t ut_select_engine_fd_add_once(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context)
+ut_errno_t ut_select_engine_fd_add_once(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context)
 {
-    errno_t              retval = UT_ERRNO_OK;
+    ut_errno_t              retval = UT_ERRNO_OK;
 
     if (engine == NULL || callback == NULL || fd < 0) {
         retval = UT_ERRNO_INVALID;
@@ -139,9 +139,9 @@ _out:
     return retval;
 }
 
-errno_t ut_select_engine_fd_del(ut_select_engine_t* engine, ut_fd_t fd)
+ut_errno_t ut_select_engine_fd_del(ut_select_engine_t* engine, ut_fd_t fd)
 {
-    errno_t              retval = UT_ERRNO_OK;
+    ut_errno_t              retval = UT_ERRNO_OK;
 
     if (engine == NULL || fd < 0) {
         retval = UT_ERRNO_INVALID;
@@ -155,9 +155,9 @@ _out:
     return retval;
 }
 
-errno_t ut_select_engine_event_add(ut_select_engine_t* engine, ut_select_event_cb callback, void* context, int64_t timeout_us)
+ut_errno_t ut_select_engine_event_add(ut_select_engine_t* engine, ut_select_event_cb callback, void* context, int64_t timeout_us)
 {
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
     engine_event_t  *event = NULL;
 
     if (engine == NULL || callback == NULL || timeout_us < 0) {
@@ -190,12 +190,12 @@ _out:
     return retval;
 }
 
-errno_t ut_select_engine_run(ut_select_engine_t* engine)
+ut_errno_t ut_select_engine_run(ut_select_engine_t* engine)
 {
     struct timeval  tm_wait;
     struct timeval* select_tm = NULL;
     engine_event_t  *event = NULL;
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
     int32_t         select_ret = 0;
 
     if (engine == NULL) {
@@ -268,9 +268,9 @@ _out:
     return retval;
 }
 
-errno_t ut_select_engine_stop(ut_select_engine_t* engine)
+ut_errno_t ut_select_engine_stop(ut_select_engine_t* engine)
 {
-    errno_t              retval = UT_ERRNO_OK;
+    ut_errno_t              retval = UT_ERRNO_OK;
     engine_manage_event_t   event = ENGINE_EVENT_STOP;
 
     if (engine == NULL) {
@@ -284,9 +284,9 @@ _out:
     return retval;
 }
 
-errno_t ut_select_engine_destroy(ut_select_engine_t* engine)
+ut_errno_t ut_select_engine_destroy(ut_select_engine_t* engine)
 {
-    errno_t              retval = UT_ERRNO_OK;
+    ut_errno_t              retval = UT_ERRNO_OK;
 
     if (engine == NULL) {
         retval = UT_ERRNO_NULLPTR;
@@ -322,9 +322,9 @@ static void __engine_reload(ut_select_engine_t* engine)
     return ;
 }
 
-static errno_t __engine_fd_add(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context, ut_bool_t temporary)
+static ut_errno_t __engine_fd_add(ut_select_engine_t* engine, ut_fd_t fd, ut_select_fd_cb callback, void* context, ut_bool_t temporary)
 {
-    errno_t      retval = UT_ERRNO_OK;
+    ut_errno_t      retval = UT_ERRNO_OK;
     char            buffer[32] = {0};
     engine_fd_t*    engine_fd = NULL;
 
@@ -346,9 +346,9 @@ _out:
     return retval;
 }
 
-errno_t __engine_fd_del(ut_select_engine_t* engine, ut_fd_t fd)
+ut_errno_t __engine_fd_del(ut_select_engine_t* engine, ut_fd_t fd)
 {
-    errno_t              retval = UT_ERRNO_OK;
+    ut_errno_t              retval = UT_ERRNO_OK;
     char                    buffer[UT_LEN_32] = {0};
 
     snprintf(buffer, UT_LEN_32 - 1, "%d", fd);
