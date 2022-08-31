@@ -5,31 +5,62 @@ set(MAJOR_VERSION  0)
 set(MINOR_VERSION  0)
 set(PATCH_VERSION  1)
 
-project(chatroom CXX C)
+project(z_ut CXX C)
 
-set(PROJECT_DIR     ${CMAKE_CURRENT_SOURCE_DIR})
-set(BUILD_DIR       ${PROJECT_DIR}/build/)
-set(TMP_FILES_DIR   ${BUILD_DIR}/CMakeCaches/)
-set(EXECUTABLE_OUTPUT_PATH ${BUILD_DIR}/exec)
-set(LIBRARY_OUTPUT_PATH ${BUILD_DIR}/lib)
 
-link_directories(${BUILD_DIR}/lib)
+# 创建UT的项目工作路径
+if(DEFINED UT_DIR)
+message("already difined work directory: ${UT_DIR}")
+else()
+message("not difined work directory, using default:  ${CMAKE_CURRENT_SOURCE_DIR}")
+set(UT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
 
+# 创建UT的编译路径
+if(DEFINED BUILD_DIR)
+message("already difined build directory: ${BUILD_DIR}")
+else()
+message("not difined build directory, using default:  ${UT_DIR}/build/")
+set(BUILD_DIR ${UT_DIR}/build/)
+endif()
+
+# 创建UT的lib输出路径
+if(DEFINED LIB_DIR)
+message("already difined libarary output directory: ${LIB_DIR}")
+else()
+message("not difined libarary output directory, using default:  ${BUILD_DIR}/lib/")
+set(LIB_DIR ${BUILD_DIR}/lib/)
+endif()
+set(LIBRARY_OUTPUT_PATH ${LIB_DIR})
+
+# 创建UT的cmake临时文件路径
+if(DEFINED TMP_FILES_DIR)
+message("already difined cache file directory: ${TMP_FILES_DIR}")
+else()
+message("not difined libarary output directory, using default:  ${UT_DIR}/CMakeCaches/")
+set(TMP_FILES_DIR ${UT_DIR}/CMakeCaches/)
+endif()
+
+
+
+
+# 设置编译器参数
 set(CMAKE_C_COMPILER "x86_64-linux-gnu-gcc-8")
 add_compile_options(-g -Wall -Werror)
 
+# 设置include路径
+include_directories(${UT_DIR}/include)
 
-include_directories(${PROJECT_DIR}/include)
-
-set(UTILS_LIB_SRC   ${PROJECT_DIR}/source/ut_msg.c
-                    ${PROJECT_DIR}/source/ut_socket.c
-                    ${PROJECT_DIR}/source/utils.c
-                    ${PROJECT_DIR}/source/ut_hash.c
-                    ${PROJECT_DIR}/source/ut_pri_queue.c
-                    ${PROJECT_DIR}/source/ut_select.c
+# 设置编译相关源文件
+set(UTILS_LIB_SRC   ${UT_DIR}/source/ut_msg.c
+                    ${UT_DIR}/source/ut_socket.c
+                    ${UT_DIR}/source/utils.c
+                    ${UT_DIR}/source/ut_hash.c
+                    ${UT_DIR}/source/ut_pri_queue.c
+                    ${UT_DIR}/source/ut_select.c
                     )
 
-
+# 创建动态库编译，添加编译器选项（日志等级）
 add_library(z_ut SHARED ${UTILS_LIB_SRC})
 target_compile_definitions(z_ut PRIVATE ENABLE_LOG=)
 target_compile_definitions(z_ut PRIVATE LOG_LEVEL=1)
