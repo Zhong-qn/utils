@@ -25,7 +25,7 @@ __BEGIN_DECLS
  * 
  * @param [in] context 回调者的上下文
  */
-typedef void (*ut_select_event_cb)(void* context);
+typedef void (*ut_select_schedule_cb)(void* context);
 
 /**
  * @brief 文件描述符可读监视的回调函数
@@ -76,7 +76,7 @@ ut_errno_t ut_select_engine_stop(ut_select_engine_t* engine);
  * @param [in] timeout_us 定时器时长，单位微秒us
  * @return ut_errno_t 
  */
-ut_errno_t ut_select_engine_event_add(ut_select_engine_t* engine, ut_select_event_cb callback, void* context, int64_t timeout_us);
+ut_errno_t ut_select_engine_schedule_add(ut_select_engine_t* engine, ut_select_schedule_cb callback, void* context, int64_t timeout_us);
 
 /**
  * @brief 设置一个一次性的文件描述符监视，在该文件描述符可读一次之后，就删除

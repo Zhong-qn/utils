@@ -27,7 +27,7 @@ typedef enum {
 } engine_manage_event_t;
 
 typedef struct {
-    ut_select_event_cb  cb;
+    ut_select_schedule_cb  cb;
     void*               context;
     struct timeval      time;
 } engine_event_t;
@@ -155,7 +155,7 @@ _out:
     return retval;
 }
 
-ut_errno_t ut_select_engine_event_add(ut_select_engine_t* engine, ut_select_event_cb callback, void* context, int64_t timeout_us)
+ut_errno_t ut_select_engine_schedule_add(ut_select_engine_t* engine, ut_select_schedule_cb callback, void* context, int64_t timeout_us)
 {
     ut_errno_t      retval = UT_ERRNO_OK;
     engine_event_t  *event = NULL;

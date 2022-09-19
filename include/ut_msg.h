@@ -55,8 +55,8 @@ __BEGIN_DECLS
 /**
  * @brief 从socket对象中读取一段消息，注意！！！msg必须被free！
  * 
- * @param msg 读取到的数据内容注意！！！msg必须被free！
- * @param sock 发送使用的socket结构体
+ * @param [inout] msg 读取到的数据内容注意！！！msg必须被free！
+ * @param [in] sock 发送使用的socket结构体
  * @return ut_errno_t 
  */
 ut_errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock);
@@ -64,11 +64,13 @@ ut_errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock);
 /**
  * @brief 通过socket对象发送一段消息
  * 
- * @param msg 待发送的消息
- * @param from_sock 发送使用的socket结构体
+ * @param [in] type 待发送的消息的类型
+ * @param [in] msg_text 待发送的消息的正文
+ * @param [in] text_size 待发送的消息的正文大小
+ * @param [in] from_sock 发送使用的socket结构体
  * @return ut_errno_t 
  */
-ut_errno_t ut_msg_send_by_socket(ut_msg_t* msg, ut_socket_t* sock);
+ut_errno_t ut_msg_send_by_socket(ut_msg_type_t type, void* msg_text, uint32_t text_size, ut_socket_t* sock);
 
 __END_DECLS
 #endif

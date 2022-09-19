@@ -38,9 +38,25 @@ TAG_OUT:
     return retval;
 }
 
-ut_errno_t ut_msg_send_by_socket(ut_msg_t* msg, ut_socket_t* sock)
+ut_errno_t ut_msg_send_by_socket(ut_msg_type_t type, void* msg_text, uint32_t text_size, ut_socket_t* sock)
 {
-    return ut_socket_msg_send(sock, msg, MSG_SIZE(msg));
+    ut_msg_t*   msg = NULL;
+    ut_errno_t  retval = UT_ERRNO_OK;
+
+    CHECK_PTR_RET(msg_text, retval, UT_ERRNO_NULLPTR);
+    CHECK_VAL_EQ(text_size, 0, retval = UT_ERRNO_INVALID, TAG_OUT);
+    CHECK_VAL_EQ(type < UT_MSG_TYPE_AUTH_REQUEST || type > UT_MSG_TYPE_QUIT, UT_TRUE, retval = UT_ERRNO_INVALID, TAG_OUT);
+
+    msg = zero_alloc(MSG_HEADER_SIZE + text_size);
+    msg->message_type = type;
+    msg->message_size = text_size;
+    memcpy(msg->message, msg_text, text_size);
+
+    retval = ut_socket_msg_send(sock, msg, MSG_SIZE(msg));
+    free(msg);
+
+TAG_OUT:
+    return retval;
 }
 
 ut_errno_t msg_read_from_socket_trywait(ut_msg_t** msg, ut_socket_t* sock)
