@@ -116,7 +116,7 @@ ut_errno_t ut_select_engine_fd_add_forever(ut_select_engine_t* engine, ut_fd_t f
         retval = UT_ERRNO_INVALID;
         goto _out;
     }
-    CR_LOG_DEBUG("select engine add a fd=%d\n", fd);
+    UT_LOG_DEBUG("select engine add a fd=%d\n", fd);
     retval = __engine_fd_add(engine, fd, callback, context, UT_FALSE);
     __engine_reload(engine);    /* 通知engine重新进行select */
 
@@ -169,7 +169,7 @@ ut_errno_t ut_select_engine_schedule_add(ut_select_engine_t* engine, ut_select_s
     event->cb = callback;
     event->context = context;
     gettimeofday(&event->time, NULL);
-    CR_LOG_DEBUG("current time:  %lds:%ldus\n", event->time.tv_sec, event->time.tv_usec);
+    UT_LOG_DEBUG("current time:  %lds:%ldus\n", event->time.tv_sec, event->time.tv_usec);
 
     event->time.tv_sec += timeout_us / (1000 * 1000);
     event->time.tv_usec += timeout_us % (1000 * 1000);
@@ -182,7 +182,7 @@ ut_errno_t ut_select_engine_schedule_add(ut_select_engine_t* engine, ut_select_s
         event->time.tv_usec = 0;
     }
 
-    CR_LOG_DEBUG("set timeout event %lds:%ldus\n", event->time.tv_sec, event->time.tv_usec);;
+    UT_LOG_DEBUG("set timeout event %lds:%ldus\n", event->time.tv_sec, event->time.tv_usec);;
     ut_pri_queue_push(engine->event_queue, event);
     __engine_reload(engine);    /* 通知engine重新进行select */
 
@@ -218,15 +218,15 @@ ut_errno_t ut_select_engine_run(ut_select_engine_t* engine)
         retval = ut_pri_queue_peek(engine->event_queue, (void**)&event);
         if (retval == UT_ERRNO_RESOURCE) {   /* 说明此时没有事件需要处理 */
             select_tm = NULL;
-            CR_LOG_DEBUG("no need to wait.\n");
+            UT_LOG_DEBUG("no need to wait.\n");
         } else if (retval != UT_ERRNO_OK) {
             retval = UT_ERRNO_UNKNOWN;       /* 出错了 */
-            CR_LOG_ERROR("error occured!\n");
+            UT_LOG_ERROR("error occured!\n");
             goto _out;
         } else {                            /* 说明此时有事件需要处理 */
             gettimeofday(&tm_wait, NULL);
-            CR_LOG_DEBUG("current time:  %lds:%ldus\n", tm_wait.tv_sec, tm_wait.tv_usec);
-            CR_LOG_DEBUG("event time:  %lds:%ldus\n", event->time.tv_sec, event->time.tv_usec);
+            UT_LOG_DEBUG("current time:  %lds:%ldus\n", tm_wait.tv_sec, tm_wait.tv_usec);
+            UT_LOG_DEBUG("event time:  %lds:%ldus\n", event->time.tv_sec, event->time.tv_usec);
             tm_wait.tv_sec = event->time.tv_sec - tm_wait.tv_sec;
             tm_wait.tv_usec = event->time.tv_usec - tm_wait.tv_usec;
             if (tm_wait.tv_usec < 0) {
@@ -237,12 +237,12 @@ ut_errno_t ut_select_engine_run(ut_select_engine_t* engine)
                 tm_wait.tv_sec = 0;
                 tm_wait.tv_usec = 0;
             }
-            CR_LOG_DEBUG("waiting for timeout...%lds:%ldus\n", tm_wait.tv_sec, tm_wait.tv_usec);
+            UT_LOG_DEBUG("waiting for timeout...%lds:%ldus\n", tm_wait.tv_sec, tm_wait.tv_usec);
             select_tm = &tm_wait;
         }
 
         select_ret = select(engine->max_fd + 1, &engine->read_fds, NULL, NULL, select_tm);
-        CR_LOG_DEBUG("select_ret=%d\n", select_ret);
+        UT_LOG_DEBUG("select_ret=%d\n", select_ret);
 
         /* 解锁，此后将会执行回调函数。此时调整select引擎，则不需要进行reload */
         pthread_mutex_unlock(&engine->running_flag);
@@ -259,7 +259,7 @@ ut_errno_t ut_select_engine_run(ut_select_engine_t* engine)
             ut_hash_foreach(engine->fd_poll, __fd_isset_foreach, engine);
         /* 被中断程序打断 */
         } else {
-            CR_LOG_INFO("select has been interrupted by system call.(%s)\n", strerror(errno));
+            UT_LOG_INFO("select has been interrupted by system call.(%s)\n", strerror(errno));
         }
     }
 
@@ -419,7 +419,7 @@ static void __manage_fd_callback(ut_fd_t manage_fd, void* context)
 
     while (fd_readable(manage_fd)) {
         read(manage_fd, &event, sizeof(engine_manage_event_t));
-        CR_LOG_DEBUG("process manage message %d\n", event);
+        UT_LOG_DEBUG("process manage message %d\n", event);
         switch (event) {
             case ENGINE_EVENT_STOP:
                 engine->need_continue = UT_FALSE;

@@ -127,7 +127,7 @@ ut_errno_t ut_pri_queue_peek(ut_pri_queue_t * pri_queue, void** pdata)
         retval = UT_ERRNO_RESOURCE;
     }
     pthread_mutex_unlock(&pri_queue->mutex);
-    CR_LOG_DEBUG("peek data address %p\n", *pdata);
+    UT_LOG_DEBUG("peek data address %p\n", *pdata);
 
 _out:
     return retval;
@@ -159,7 +159,7 @@ ut_errno_t ut_pri_queue_push(ut_pri_queue_t * pri_queue, void* data)
 
     pthread_cond_broadcast(&pri_queue->cond);
     pthread_mutex_unlock(&pri_queue->mutex);
-    CR_LOG_DEBUG("push data address %p\n", data);
+    UT_LOG_DEBUG("push data address %p\n", data);
 
 _out:
     return retval;

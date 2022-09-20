@@ -135,32 +135,32 @@
 #define COLOR_CH_BLUE                   "34"
 #define COLOR_CH_PINK                   "35"
 
-#define CR_LOG(format, ...)
-#define CR_LOG_DEBUG(format, ...)
-#define CR_LOG_INFO(format, ...)
-#define CR_LOG_ERROR(format, ...)
+#define UT_LOG(format, ...)
+#define UT_LOG_DEBUG(format, ...)
+#define UT_LOG_INFO(format, ...)
+#define UT_LOG_ERROR(format, ...)
 
 #ifdef ENABLE_LOG
 #if (LOG_LEVEL >= 3)
-#undef CR_LOG
-#define CR_LOG(format, ...)             printf(ESC_STR(COLOR_CH_BLACK,  "[%25s :%5d] "      format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#undef UT_LOG
+#define UT_LOG(format, ...)             printf(ESC_STR(COLOR_CH_BLACK,  "[%25s :%5d] "      format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif
 #if (LOG_LEVEL >= 2)
-#undef CR_LOG_DEBUG
-#define CR_LOG_DEBUG(format, ...)       printf(ESC_STR(COLOR_CH_GREEN,  "[%25s :%5d] [D] "  format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#undef UT_LOG_DEBUG
+#define UT_LOG_DEBUG(format, ...)       printf(ESC_STR(COLOR_CH_GREEN,  "[%25s :%5d] [D] "  format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif
 #if (LOG_LEVEL >= 1)
-#undef CR_LOG_INFO
-#define CR_LOG_INFO(format, ...)        printf(ESC_STR(COLOR_CH_BLUE,   "[%25s :%5d] [I] "  format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#undef UT_LOG_INFO
+#define UT_LOG_INFO(format, ...)        printf(ESC_STR(COLOR_CH_BLUE,   "[%25s :%5d] [I] "  format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif
 #if (LOG_LEVEL >= 0)
-#undef CR_LOG_ERROR
-#define CR_LOG_ERROR(format, ...)       printf(ESC_STR(COLOR_CH_RED,    "[%25s :%5d] [E] "  format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#undef UT_LOG_ERROR
+#define UT_LOG_ERROR(format, ...)       printf(ESC_STR(COLOR_CH_RED,    "[%25s :%5d] [E] "  format), __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif
 #endif
 
-#define FUNC_IN()                       CR_LOG_DEBUG("%s in\n", __FUNCTION__)
-#define FUNC_OUT()                      CR_LOG_DEBUG("%s out\n", __FUNCTION__)
+#define FUNC_IN()                       UT_LOG_DEBUG("%s in\n", __FUNCTION__)
+#define FUNC_OUT()                      UT_LOG_DEBUG("%s out\n", __FUNCTION__)
 
 
 /**
@@ -173,11 +173,11 @@
         int retval = -1;\
         int status = system(command);\
         if (status == -1) {\
-            CR_LOG("system error\n");\
+            UT_LOG("system error\n");\
         } else if (!WIFEXITED(status)) {\
-            CR_LOG("system call shell failed\n");\
+            UT_LOG("system call shell failed\n");\
         } else if (WEXITSTATUS(status)) {\
-            CR_LOG("system run shell return failed\n");\
+            UT_LOG("system run shell return failed\n");\
         } else {\
             retval = 0;\
         }\

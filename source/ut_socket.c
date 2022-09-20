@@ -82,7 +82,7 @@ ut_errno_t ut_socket_create(ut_socket_t** out, in_addr_t local_addr, in_port_t l
     new->st_local_addr.sin_family = AF_INET;
     new->st_local_addr.sin_addr.s_addr = local_addr;
     new->st_local_addr.sin_port = local_port;
-    CR_LOG_INFO("socket create, bind to %s:%hd\n", inet_ntoa(new->st_local_addr.sin_addr), ntohs(local_port));
+    UT_LOG_INFO("socket create, bind to %s:%hd\n", inet_ntoa(new->st_local_addr.sin_addr), ntohs(local_port));
 
     if (bind(new->fd, (struct sockaddr*)&new->st_local_addr, sizeof(struct sockaddr_in)) < 0) {
         retval = UT_ERRNO_UNKNOWN;
@@ -222,7 +222,7 @@ ut_errno_t ut_socket_accept(ut_socket_t** out, ut_socket_t* sock, ut_select_engi
             socklen_t   socklen;
 
             tmp_fd = accept(sock->fd, (struct sockaddr*)&tmp_addr, &socklen);
-            CR_LOG_INFO("got a new connection on %s:%hd\n", 
+            UT_LOG_INFO("got a new connection on %s:%hd\n", 
                         inet_ntoa(sock->st_local_addr.sin_addr), 
                         ntohs(sock->st_local_addr.sin_port));
             CHECK_VAL_EQ(tmp_fd, -1, retval = UT_ERRNO_UNKNOWN, TAG_OUT);
@@ -336,10 +336,10 @@ ut_errno_t ut_socket_msg_send(ut_socket_t* sock, const void* msg, size_t msg_siz
             break;
     }
     if (sendlen != msg_size) {
-        CR_LOG_DEBUG("msg send %ld bytes, but need to send %ld bytes, err=%s\n", sendlen, msg_size, strerror(errno));
+        UT_LOG_DEBUG("msg send %ld bytes, but need to send %ld bytes, err=%s\n", sendlen, msg_size, strerror(errno));
         retval = UT_ERRNO_UNKNOWN;
     } else {
-        CR_LOG_DEBUG("send %ld bytes data\n", sendlen);
+        UT_LOG_DEBUG("send %ld bytes data\n", sendlen);
     }
 
 TAG_OUT:
@@ -369,11 +369,11 @@ ut_errno_t ut_socket_msg_recv(ut_socket_t* sock, void* msg, size_t msg_size, ssi
             break;
     }
     if (*actual_size != msg_size) {
-        CR_LOG_DEBUG("[%p::%d] actual read %ld bytes, need read %ld bytes\n", 
+        UT_LOG_DEBUG("[%p::%d] actual read %ld bytes, need read %ld bytes\n", 
                      sock, ut_socket_read_fd_get(sock), *actual_size, msg_size);
         retval = UT_ERRNO_UNKNOWN;
     } else {
-        CR_LOG_DEBUG("recv %ld bytes data.\n", *actual_size);
+        UT_LOG_DEBUG("recv %ld bytes data.\n", *actual_size);
     }
 
 TAG_OUT:
@@ -434,7 +434,7 @@ static void __udp_reg_callback(ut_fd_t fd, void* context)
      */
     recvlen = recvfrom(sock->fd, buffer, UT_LEN_1024, 0, (struct sockaddr*)&sockaddr, &socklen);
     if (recvlen <= 0) {
-        CR_LOG_ERROR("Unknown error occurred when call recvfrom!\n");
+        UT_LOG_ERROR("Unknown error occurred when call recvfrom!\n");
         goto TAG_OUT;
     }
 
@@ -445,7 +445,7 @@ static void __udp_reg_callback(ut_fd_t fd, void* context)
     } else {                        /* 消息第一次收到，构造新的远端结构体 */
         ut_socket_t     new_sock = {0};
 
-        CR_LOG_DEBUG("new connection!\n");
+        UT_LOG_DEBUG("new connection!\n");
         new_sock.trans_mode = UT_TRANS_UDP;
         new_sock.diff.udp.belong_to = sock;
         pipe(new_sock.diff.udp.pipe);       /* 创建消息管道 */
@@ -476,18 +476,18 @@ static void __udp_reg_callback2(ut_fd_t fd, void* context)
      */
     recvlen = recvfrom(sock->fd, buffer, UT_LEN_1024, 0, (struct sockaddr*)&sockaddr, &socklen);
     if (recvlen <= 0) {
-        CR_LOG_ERROR("Unknown error occurred when call recvfrom!\n");
+        UT_LOG_ERROR("Unknown error occurred when call recvfrom!\n");
         goto TAG_OUT;
     }
 
     /* 如果消息来自指定的远端，则写入管道 */
     if (!memcmp(&sockaddr, &sock->st_remote_addr, sizeof(struct sockaddr_in))) {
-        CR_LOG_DEBUG("received %ld bytes data, write to pipe %d\n", recvlen, PIPE_RD_FD(sock->diff.udp.pipe));
+        UT_LOG_DEBUG("received %ld bytes data, write to pipe %d\n", recvlen, PIPE_RD_FD(sock->diff.udp.pipe));
         write(PIPE_WR_FD(sock->diff.udp.pipe), buffer, recvlen);
 
     /* 丢弃数据 */
     } else {
-        CR_LOG_INFO("discard %ld bytes message from \"%s:%hd\"\n", recvlen,
+        UT_LOG_INFO("discard %ld bytes message from \"%s:%hd\"\n", recvlen,
                     inet_ntoa(sock->st_local_addr.sin_addr), 
                     ntohs(sock->st_local_addr.sin_port));
     }
