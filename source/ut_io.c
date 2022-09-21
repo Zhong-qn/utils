@@ -72,6 +72,7 @@ void ut_fd_block(ut_fd_t fd, ut_bool_t block)
     } else {
         flag |= O_NONBLOCK;
     }
+    fcntl(fd, F_SETFL, flag);
 
     return ;
 }

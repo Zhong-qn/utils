@@ -93,7 +93,7 @@ ut_bool_t ut_char_is_lowercase(char ch)
 
 ut_bool_t ut_char_is_expand(char ch)
 {
-    if (ch >= 0x80 && ch <= 0xff) {
+    if (((u_int8_t)ch) >= 0x80 && ((u_int8_t)ch) <= 0xff) {
         return UT_TRUE;
     }
 
