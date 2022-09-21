@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2022
  * 
  */
+#include <string.h>
 #include "ut_hash.h"
 
 #define INITIAL_MAX 15 /* 2^n - 1 */
@@ -57,7 +58,7 @@ static uint32_t hashfunc_default(const char* char_key)
  */
 static hash_entry_t** __alloc_array(ut_hash_t *hash_table, uint32_t max)
 {
-    return zero_alloc(sizeof(*hash_table->array) * (max + 1));
+    return ut_zero_alloc(sizeof(*hash_table->array) * (max + 1));
 }
 
 /**
@@ -113,7 +114,7 @@ ut_errno_t ut_hash_create(ut_hash_t **out, uint32_t size, ut_hash_func ut_hash_f
     if (ut_hash_func == NULL)
         ut_hash_func = hashfunc_default;
 
-    hash_table = zero_alloc(sizeof(ut_hash_t));
+    hash_table = ut_zero_alloc(sizeof(ut_hash_t));
     *out = hash_table;
     hash_table->count = 0;
     hash_table->max = max_size;
@@ -180,7 +181,7 @@ static hash_entry_t **find_entry(ut_hash_t *hash_table, const char *key, const v
     if ((hash_entry = hash_table->free) != NULL) {
         hash_table->free = hash_entry->next;
     } else {
-        hash_entry = zero_alloc(sizeof(*hash_entry));
+        hash_entry = ut_zero_alloc(sizeof(*hash_entry));
     }
     hash_entry->next = NULL;
     hash_entry->hash = hash;

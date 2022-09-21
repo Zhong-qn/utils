@@ -11,7 +11,7 @@
 #ifndef __UTILS_PRI_QUEUE_H__
 #define __UTILS_PRI_QUEUE_H__
 
-#include "utils.h"
+#include "ut.h"
 
 /* 基本优先级队列类型 */
 typedef struct pri_queue ut_pri_queue_t;

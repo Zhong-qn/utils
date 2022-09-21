@@ -10,6 +10,8 @@
  */
 #include "ut_msg.h"
 
+#include <string.h>
+
 
 ut_errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock)
 {
@@ -22,7 +24,7 @@ ut_errno_t ut_msg_recv_by_socket(ut_msg_t** msg, ut_socket_t* sock)
     CHECK_VAL_NEQ(retval, UT_ERRNO_OK, NULL, TAG_OUT);
     CHECK_VAL_NEQ(readlen, MSG_HEADER_SIZE, NULL, TAG_OUT);
 
-    str_msg = zero_alloc(MSG_HEADER_SIZE + msg_header.message_size + 1);
+    str_msg = ut_zero_alloc(MSG_HEADER_SIZE + msg_header.message_size + 1);
     CHECK_PTR_RET(str_msg, retval, UT_ERRNO_OUTOFMEM);
     str_msg += MSG_HEADER_SIZE;
 
@@ -47,7 +49,7 @@ ut_errno_t ut_msg_send_by_socket(ut_msg_type_t type, void* msg_text, uint32_t te
     CHECK_VAL_EQ(text_size, 0, retval = UT_ERRNO_INVALID, TAG_OUT);
     CHECK_VAL_EQ(type < UT_MSG_TYPE_AUTH_REQUEST || type > UT_MSG_TYPE_QUIT, UT_TRUE, retval = UT_ERRNO_INVALID, TAG_OUT);
 
-    msg = zero_alloc(MSG_HEADER_SIZE + text_size);
+    msg = ut_zero_alloc(MSG_HEADER_SIZE + text_size);
     msg->message_type = type;
     msg->message_size = text_size;
     memcpy(msg->message, msg_text, text_size);

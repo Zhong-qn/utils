@@ -52,7 +52,7 @@ ut_pri_queue_t *ut_pri_queue_create(int32_t initial_size, ut_bool_t size_adaptio
         goto _out;
     }
 
-    new_queue = (ut_pri_queue_t*)zero_alloc(sizeof(ut_pri_queue_t));
+    new_queue = (ut_pri_queue_t*)ut_zero_alloc(sizeof(ut_pri_queue_t));
     if (new_queue == NULL) {
         goto _out;
     }
@@ -62,7 +62,7 @@ ut_pri_queue_t *ut_pri_queue_create(int32_t initial_size, ut_bool_t size_adaptio
     pthread_cond_init(&new_queue->cond, NULL);
 
     /* 申请堆内存大小+1是因为堆首元素不使用，这样能够进行快速的上浮、下沉排序算法 */
-    new_queue->heap = (inn_heap_t*)zero_alloc(sizeof(inn_heap_t) + ((initial_size + 1) * sizeof(heap_element_t)));
+    new_queue->heap = (inn_heap_t*)ut_zero_alloc(sizeof(inn_heap_t) + ((initial_size + 1) * sizeof(heap_element_t)));
     if (new_queue == NULL) {
         goto _free;
     }
@@ -259,7 +259,7 @@ static ut_errno_t __heap_push(inn_heap_t *heap, void* data)
     }
 
     /* 将数据放入堆，只能放在堆的底部。第0个不使用 */
-    new_elem = zero_alloc(sizeof(heap_element_t));
+    new_elem = ut_zero_alloc(sizeof(heap_element_t));
     if (new_elem == NULL) {
         retval = UT_ERRNO_OUTOFMEM;
         goto _out;

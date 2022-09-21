@@ -12,7 +12,8 @@
 #include <sys/time.h>
 #include <pthread.h>
 #include <errno.h>
-#include "utils.h"
+#include <string.h>
+#include "ut.h"
 #include "ut_hash.h"
 #include "ut_pri_queue.h"
 #include "ut_select.h"
@@ -72,7 +73,7 @@ ut_errno_t ut_select_engine_create(ut_select_engine_t **engine)
         goto _out;
     }
 
-    new_engine = zero_alloc(sizeof(ut_select_engine_t));
+    new_engine = ut_zero_alloc(sizeof(ut_select_engine_t));
     if (new_engine == NULL) {
         retval = UT_ERRNO_OUTOFMEM;
         goto _out;
@@ -165,7 +166,7 @@ ut_errno_t ut_select_engine_schedule_add(ut_select_engine_t* engine, ut_select_s
         goto _out;
     }
 
-    event = zero_alloc(sizeof(engine_event_t));
+    event = ut_zero_alloc(sizeof(engine_event_t));
     event->cb = callback;
     event->context = context;
     gettimeofday(&event->time, NULL);
@@ -328,7 +329,7 @@ static ut_errno_t __engine_fd_add(ut_select_engine_t* engine, ut_fd_t fd, ut_sel
     char            buffer[32] = {0};
     engine_fd_t*    engine_fd = NULL;
 
-    engine_fd = zero_alloc(sizeof(engine_fd_t));
+    engine_fd = ut_zero_alloc(sizeof(engine_fd_t));
     if (engine_fd == NULL) {
         retval = UT_ERRNO_OUTOFMEM;
         goto _out;
@@ -417,7 +418,7 @@ static void __manage_fd_callback(ut_fd_t manage_fd, void* context)
     engine_manage_event_t       event;
     ut_select_engine_t*         engine = (ut_select_engine_t*)context;
 
-    while (fd_readable(manage_fd)) {
+    while (ut_fd_readable(manage_fd)) {
         read(manage_fd, &event, sizeof(engine_manage_event_t));
         UT_LOG_DEBUG("process manage message %d\n", event);
         switch (event) {

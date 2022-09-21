@@ -10,6 +10,7 @@
  */
 
 #include <unistd.h>
+#include <string.h>
 #include <errno.h>
 #include <arpa/inet.h>
 #include <net/if.h>
@@ -56,7 +57,7 @@ ut_errno_t ut_socket_create(ut_socket_t** out, in_addr_t local_addr, in_port_t l
 
     CHECK_PTR_RET(out, retval, UT_ERRNO_NULLPTR);
 
-    *out = zero_alloc(sizeof(ut_socket_t));
+    *out = ut_zero_alloc(sizeof(ut_socket_t));
     CHECK_PTR_RET(*out, retval, UT_ERRNO_OUTOFMEM);
     new = *out;
 
@@ -227,7 +228,7 @@ ut_errno_t ut_socket_accept(ut_socket_t** out, ut_socket_t* sock, ut_select_engi
                         ntohs(sock->st_local_addr.sin_port));
             CHECK_VAL_EQ(tmp_fd, -1, retval = UT_ERRNO_UNKNOWN, TAG_OUT);
 
-            accepted_sock = zero_alloc(sizeof(ut_socket_t));
+            accepted_sock = ut_zero_alloc(sizeof(ut_socket_t));
             CHECK_PTR_RET(accepted_sock, retval, UT_ERRNO_OUTOFMEM);
 
             accepted_sock->fd = tmp_fd;
@@ -261,7 +262,7 @@ ut_errno_t ut_socket_accept(ut_socket_t** out, ut_socket_t* sock, ut_select_engi
                 goto TAG_OUT;
             }
 
-            accepted_sock = zero_alloc(sizeof(ut_socket_t));
+            accepted_sock = ut_zero_alloc(sizeof(ut_socket_t));
             CHECK_PTR_RET(accepted_sock, retval, UT_ERRNO_OUTOFMEM);
             memcpy(accepted_sock, &tmp_sock, sizeof(ut_socket_t));
 
@@ -389,11 +390,11 @@ ut_errno_t ut_socket_set_block(ut_socket_t* sock, ut_bool_t block)
     sock->non_block = !block;
     switch (sock->trans_mode) {
         case UT_TRANS_TCP:
-            fd_block(sock->fd, block);
+            ut_fd_block(sock->fd, block);
             break;
         case UT_TRANS_UDP:
             if (PIPE_RD_FD(sock->diff.udp.pipe)) {
-                fd_block(PIPE_RD_FD(sock->diff.udp.pipe), block);
+                ut_fd_block(PIPE_RD_FD(sock->diff.udp.pipe), block);
             }
             break;
         default:

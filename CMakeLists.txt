@@ -33,6 +33,14 @@ set(LIB_DIR ${BUILD_DIR}/lib/)
 endif()
 set(LIBRARY_OUTPUT_PATH ${LIB_DIR})
 
+# 创建UT的头文件输出路径
+if(DEFINED INCLUDE_OUTPUT_DIR)
+message("already difined include file output directory: ${INCLUDE_OUTPUT_DIR}")
+else()
+message("not difined libarary output directory, using default:  ${BUILD_DIR}/include/")
+set(INCLUDE_OUTPUT_DIR ${BUILD_DIR}/include/)
+endif()
+
 # 创建UT的cmake临时文件路径
 if(DEFINED TMP_FILES_DIR)
 message("already difined cache file directory: ${TMP_FILES_DIR}")
@@ -54,7 +62,8 @@ include_directories(${UT_DIR}/include)
 # 设置编译相关源文件
 set(UTILS_LIB_SRC   ${UT_DIR}/source/ut_msg.c
                     ${UT_DIR}/source/ut_socket.c
-                    ${UT_DIR}/source/utils.c
+                    ${UT_DIR}/source/ut_io.c
+                    ${UT_DIR}/source/ut_string.c
                     ${UT_DIR}/source/ut_hash.c
                     ${UT_DIR}/source/ut_pri_queue.c
                     ${UT_DIR}/source/ut_select.c
@@ -65,3 +74,21 @@ add_library(z_ut SHARED ${UTILS_LIB_SRC})
 target_compile_definitions(z_ut PRIVATE ENABLE_LOG=)
 target_compile_definitions(z_ut PRIVATE LOG_LEVEL=1)
 target_link_libraries(z_ut -lpthread)
+
+# 创建静态库编译，添加编译器选项（日志等级）
+add_library(z_ut_st STATIC ${UTILS_LIB_SRC})
+target_compile_definitions(z_ut_st PRIVATE ENABLE_LOG=)
+target_compile_definitions(z_ut_st PRIVATE LOG_LEVEL=1)
+target_link_libraries(z_ut_st -lpthread)
+
+set(UTILS_INC_SRC   ${UT_DIR}/include/ut.h
+                    ${UT_DIR}/include/ut_hash.h
+                    ${UT_DIR}/include/ut_msg.h
+                    ${UT_DIR}/include/ut_socket.h
+                    ${UT_DIR}/include/ut_pri_queue.h
+                    ${UT_DIR}/include/ut_select.h
+                    )
+
+foreach(file_i ${UTILS_INC_SRC})
+    file(COPY ${file_i} DESTINATION ${INCLUDE_OUTPUT_DIR})
+endforeach(file_i)

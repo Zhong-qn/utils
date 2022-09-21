@@ -1,5 +1,5 @@
 /**
- * @file utils.h
+ * @file ut.h
  * @author Zhong Qiaoning (691365572@qq.com)
  * @brief tools
  * @version 1.0
@@ -13,36 +13,32 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <strings.h>
 #include <stdint.h>
-#include <stddef.h>
 #include <sys/ioctl.h>
 
-
-#define ASCII_CODE_NUL      0x0000
-#define ASCII_CODE_SOH      0x0001
-#define ASCII_CODE_STX      0x0002
-#define ASCII_CODE_ETX      0x0003
-#define ASCII_CODE_EOT      0x0004
-#define ASCII_CODE_ENQ      0x0005
-#define ASCII_CODE_ACK      0x0006
-#define ASCII_CODE_BEL      0x0007
-#define ASCII_CODE_BS       0x0008
-#define ASCII_CODE_HT       0x0009
-#define ASCII_CODE_LF       0x000a
-#define ASCII_CODE_VT       0x000b
-#define ASCII_CODE_FF       0x000c
-#define ASCII_CODE_CR       0x000d
-#define ASCII_CODE_SO       0x000e
-#define ASCII_CODE_SI       0x000f
-#define ASCII_CODE_DEL      0x007f
-#define ASCII_CODE_DC1      0x0011
-#define ASCII_CODE_SUB      0x001a
-#define ASCII_CODE_ESC      0x001b
-#define ASCII_CODE_SP       0x0020
-#define ASCII_CODE_ESC2     0x00e0
-#define ASCII_CODE_MAX      0x00ff
+#define ASCII_CODE_NUL      0x00U
+#define ASCII_CODE_SOH      0x01U
+#define ASCII_CODE_STX      0x02U
+#define ASCII_CODE_ETX      0x03U
+#define ASCII_CODE_EOT      0x04U
+#define ASCII_CODE_ENQ      0x05U
+#define ASCII_CODE_ACK      0x06U
+#define ASCII_CODE_BEL      0x07U
+#define ASCII_CODE_BS       0x08U
+#define ASCII_CODE_HT       0x09U
+#define ASCII_CODE_LF       0x0aU
+#define ASCII_CODE_VT       0x0bU
+#define ASCII_CODE_FF       0x0cU
+#define ASCII_CODE_CR       0x0dU
+#define ASCII_CODE_SO       0x0eU
+#define ASCII_CODE_SI       0x0fU
+#define ASCII_CODE_DEL      0x7fU
+#define ASCII_CODE_DC1      0x11U
+#define ASCII_CODE_SUB      0x1aU
+#define ASCII_CODE_ESC      0x1bU
+#define ASCII_CODE_SP       0x20U
+#define ASCII_CODE_ESC2     0xe0U
+#define ASCII_CODE_MAX      0xffU
 
 #define UT_LEN_16           16
 #define UT_LEN_32           32
@@ -215,49 +211,148 @@ __BEGIN_DECLS
  * @param [in] size 申请的空间大小
  * @retval 返回申请到的空间
  */
-void* zero_alloc(size_t size);
+void* ut_zero_alloc(size_t size);
 
 
 /*****************************************************/
 /********************字符类型判断***********************/
 /*****************************************************/
 
-ut_bool_t char_is_ctl(char ch);
-ut_bool_t char_is_num(char ch);
-ut_bool_t char_is_hex(char ch);
-ut_bool_t char_is_symbol(char ch);
-ut_bool_t char_is_letter(char ch);
-ut_bool_t char_is_expand(char ch);
-ut_bool_t char_is_separator(char ch);
-ut_bool_t char_is_capital(char ch);
-ut_bool_t char_is_lowercase(char ch);
+/**
+ * @brief 判断字符是ASCII控制字符
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_ctl(char ch);
 
 /**
- * @brief 若字符是大写字母，将该字母变成对应的小写字母
+ * @brief 判断字符是数字
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_num(char ch);
+
+/**
+ * @brief 判断字符是十六进制数字
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_hex(char ch);
+
+/**
+ * @brief 判断字符是符号
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_symbol(char ch);
+
+/**
+ * @brief 判断字符是字母
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_letter(char ch);
+
+/**
+ * @brief 判断字符是ASCII扩展字符
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_expand(char ch);
+
+/**
+ * @brief 判断字符是空格或制表符
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_separator(char ch);
+
+/**
+ * @brief 判断字符是大写字母
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_capital(char ch);
+
+/**
+ * @brief 判断字符是小写字母
+ * 
+ * @param [in] ch 待判断的字符
+ * @return 真或假
+ */
+ut_bool_t ut_char_is_lowercase(char ch);
+
+
+
+
+/**
+ * @brief 将字母转换成小写
  * 
  * @param [in] ch 进行判断的字符
  * @retval 转换的结果字符
  */
-char char_lower(char ch);
+char ut_char_lower(char ch);
 
 /**
- * @brief 若字符是小写字母，将该字母变成对应的大写字母
+ * @brief 将字母转换成大写
  * 
  * @param [in] ch 进行判断的字符
  * @retval 转换的结果字符
  */
-char char_upper(char ch);
+char ut_char_upper(char ch);
 
 
 /******************************************************/
 /********************字符串类型判断**********************/
 /*****************************************************/
 
-ut_bool_t str_is_num(const char* str);
-int32_t str_is_ipv4_addr(const char * str);
-int32_t str_is_ipv6_addr(const char * str);
-int32_t str_is_macaddr(const char * str);
-int32_t str_is_hex(const char * str);
+/**
+ * @brief 判断字符串是不是数字，可判断负数和小数
+ * 
+ * @param [in] str 待判断的字符串
+ * @return 真或假
+ */
+ut_bool_t ut_str_is_num(const char* str);
+
+/**
+ * @brief 判断字符串是不是十六进制整数
+ * 
+ * @param [in] str 待判断的字符串
+ * @return 返回0表示是十六进制数，非0值表示从第几位开始不是十六进制数
+ */
+int32_t ut_str_is_hex(const char * str);
+
+/**
+ * @brief 判断字符串是不是IPv4地址
+ * 
+ * @param [in] str 待判断的字符串
+ * @return 返回0表示是IPv4地址，非0值表示从第几位开始不是IPv4地址
+ */
+int32_t ut_str_is_ipv4addr(const char * str);
+
+/**
+ * @brief 判断字符串是不是IPv6地址
+ * 
+ * @param [in] str 待判断的字符串
+ * @return 返回0表示是IPv6地址，非0值表示从第几位开始不是IPv6地址
+ */
+int32_t ut_str_is_ipv6addr(const char * str);
+
+/**
+ * @brief 判断字符串是不是MAC地址
+ * 
+ * @param [in] str 待判断的字符串
+ * @return 返回0表示是MAC地址，非0值表示从第几位开始不是MAC地址
+ */
+int32_t ut_str_is_macaddr(const char * str);
 
 
 
@@ -267,65 +362,113 @@ int32_t str_is_hex(const char * str);
 /*****************************************************/
 
 /**
- * @brief 将src复制到dest中,返回复制的长度
+ * @brief 查找字符串str中字符ch出现的次数
  * 
- * @param [inout] dest 复制到的目的地址
+ * @param [in] str 待查找的字符串
+ * @param [in] ch 查找的字符
+ * @retval 字符出现的次数
+ */
+size_t ut_strcnt(const char* str, char ch);
+
+/**
+ * @brief 查找字符串str中字符ch出现的次数，若字符出现前有'\'符号则跳过该字符
+ * 
+ * @param [in] str 待查找的字符串
+ * @param [in] ch 查找的字符
+ * @retval 字符出现的次数
+ */
+size_t ut_strcnt_sp(const char* str, char ch);
+
+
+
+
+/**
+ * @brief 将src复制到dst中
+ * 
+ * @param [inout] dst 复制到的目的地址
+ * @param [in] src 源字符串位置
+ * @retval 返回复制的长度
+ */
+size_t ut_strcpy(char* dst, const char* src);
+
+/**
+ * @brief 将src复制到dst中，直到遇到字符ch或已经到达src字符串的末尾停止。
+ * 
+ * @param [inout] dst 复制到的目的地址
  * @param [in] src 源字符串位置
  * @param [in] ch 停止的字符
  * @retval 返回复制的长度
  */
-size_t strcpy_size(char* dest, const char* src);
+size_t ut_strcpy_char(char* dst, const char* src, char ch);
 
 /**
- * @brief 将src中的size个字符复制到dest里,返回复制的长度
+ * @brief 将src复制到dst中，直到遇到字符ch或已经到达src字符串的末尾停止。若ch字符前
+ *        有'\'字符，则会忽视该字符
  * 
- * @param [inout] dest 复制到的目的地址
+ * @param [inout] dst 复制到的目的地址
  * @param [in] src 源字符串位置
  * @param [in] ch 停止的字符
  * @retval 返回复制的长度
  */
-size_t strncpy_size(char* dest, const char* src, size_t size);
+size_t ut_strcpy_char_sp(char* dst, const char* src, char ch);
 
 /**
- * @brief 将src复制到dest中，直到遇到字符ch或已经到达src字符串的末尾停止。
+ * @brief 将src复制到dst中，直到到达end或者已经到达src字符串的末尾为止
  * 
- * @param [inout] dest 复制到的目的地址
- * @param [in] src 源字符串位置
- * @param [in] ch 停止的字符
- * @retval 返回复制的长度
- */
-size_t strcpy_until_char(char* dest, const char* src, char ch);
-
-/**
- * @brief 将src复制到dest中，直到遇到字符ch或已经到达src字符串的末尾停止。若ch字符前
- *        有\\字符，则会忽视该字符
- * 
- * @param [inout] dest 复制到的目的地址
- * @param [in] src 源字符串位置
- * @param [in] ch 停止的字符
- * @retval 返回复制的长度
- */
-size_t strcpy_until_char_specific(char* dest, const char* src, char ch);
-
-/**
- * @brief 从源字符串的指定位置往后获取一段输入，遇到分隔符停止
- * 
- * @param [in] save_buf 获取输入的存放位置
- * @param [in] analysis_str 获取一段输入的源字符串
- * @param [inout] pos 当前已获取到的位置
- * @retval 获取完成后还有没有可获取的内容，有返回true，没有返回false
- */
-ut_bool_t strcpy_delimited_by_space(char* save_buf, const char* analysis_str, uint32_t* pos);
-
-/**
- * @brief 将src复制到dest中，直到到达end或者已经到达src字符串的末尾为止
- * 
- * @param [inout] dest 复制到的目的地址
+ * @param [inout] dst 复制到的目的地址
  * @param [in] src 源字符串位置
  * @param [in] end 停止的位置指针
  * @retval 返回复制的长度
  */
-size_t strcpy_until_ptr(char* dest, const char* src, const char* end);
+size_t ut_strcpy_ptr(char* dst, const char* src, const char* end);
+
+/**
+ * @brief 将src中的size个字符复制到dst里
+ * 
+ * @param [inout] dst 复制到的目的地址
+ * @param [in] src 源字符串位置
+ * @param [in] size 需要复制的长度
+ * @retval 返回实际复制的长度
+ */
+size_t ut_strncpy(char* dst, const char* src, size_t size);
+
+/**
+ * @brief 将src中的size个字符复制到dst里，直到遇到字符ch或已经到达src字符串的末尾
+ *        时停止。
+ * 
+ * @param [inout] dst 复制到的目的地址
+ * @param [in] src 源字符串位置
+ * @param [in] size 需要复制的长度
+ * @param [in] ch 停止的字符
+ * @return 返回实际复制的长度
+ */
+size_t ut_strncpy_char(char* dst, const char* src, size_t size, char ch);
+
+/**
+ * @brief 将src中的size个字符复制到dst里，直到遇到字符ch或已经到达src字符串的末尾时
+ *        停止。若ch字符前有'\'字符，则会忽视该字符
+ * 
+ * @param [inout] dst 复制到的目的地址
+ * @param [in] src 源字符串位置
+ * @param [in] size 需要复制的长度
+ * @param [in] ch 停止的字符
+ * @retval 返回实际复制的长度
+ */
+size_t ut_strncpy_char_sp(char* dst, const char* src, size_t size, char ch);
+
+/**
+ * @brief 将src中的size个字符复制到dst里，直到到达end或者已经到达src字符串的末尾为止
+ * 
+ * @param [inout] dst 复制到的目的地址
+ * @param [in] src 源字符串位置
+ * @param [in] size 需要复制的长度
+ * @param [in] end 停止的位置指针
+ * @retval 返回实际复制的长度
+ */
+size_t ut_strncpy_ptr(char* dst, const char* src, size_t size, const char* end);
+
+
+
 
 /**
  * @brief 计算src字符串的长度，遇到ch停止
@@ -334,69 +477,66 @@ size_t strcpy_until_ptr(char* dest, const char* src, const char* end);
  * @param [in] ch 停止的字符
  * @retval src到第一次遇到ch字符时的长度
  */
-size_t strlen_until_char(const char* src, const char ch);
+size_t ut_strlen_char(const char* src, char ch);
 
 /**
- * @brief 计算src字符串的长度，遇到ch停止,若ch字符出现前有\\符号则跳过该字符
+ * @brief 计算src字符串的长度，遇到ch停止,若ch字符出现前有'\'符号则跳过该字符
  * 
  * @param [in] src 计算长度的字符串
  * @param [in] ch 停止的字符
  * @retval src到第一次遇到ch字符时的长度
  */
-size_t strlen_until_char_specific(const char* src, const char ch);
+size_t ut_strlen_char_sp(const char* src, char ch);
+
+
+
 
 /**
- * @brief 在src字符串中查找ch字符第一次出现的位置，若ch字符出现前有\\符号则跳过该字符
+ * @brief 在src字符串中查找ch字符第一次出现的位置，若ch字符出现前有'\'符号则跳过该字符
  * 
  * @param [in] src 待查找的字符串
  * @param [in] ch 待查找的字符
- * @retval 成功返回ch第count次出现的位置，失败返回NULL
+ * @retval 成功返回ch第1次出现的位置，失败返回NULL
  */
-char* strchr_specific(const char* src, char ch);
+char* ut_strchr_sp(const char* src, char ch);
 
 /**
- * @brief 在src字符串内查找第count个出现的字符ch
+ * @brief 在src字符串内查找第seq个出现的字符ch
  * 
  * @param [in] src 待查找的字符串
  * @param [in] ch 待查找的字符
- * @param [in] count 需要查找字符出现的次数
- * @retval 成功返回ch第count次出现的位置，失败返回NULL
+ * @param [in] seq 需要查找字符出现的次数
+ * @retval 成功返回ch第seq次出现的位置，失败返回NULL
  */
-char* strchr_count(const char* src, char ch, int count);
+char* ut_strchr_seq(const char* src, char ch, int seq);
 
 /**
- * @brief 在src字符串中查找ch字符第一次出现的位置，若ch字符出现在()、{}、[]内，则跳过
+ * @brief 在src字符串中查找ch字符第一次出现的位置，跳过出现在()、{}、[]内的ch字符
  * 
  * @param [in] src 待查找的字符串
  * @param [in] ch 待查找的字符
  * @retval 成功返回ch第一次出现的位置，失败返回NULL
  */
-char* strchr_case_brackets(const char* src, char ch);
+char* ut_strchr_brackets(const char* src, char ch);
 
-/**
- * @brief 查找字符串str中字符find_char出现的次数，若字符出现前有\\符号则跳过该字符
- * 
- * @param [in] str 待查找的字符串
- * @param [in] find_char 查找的字符
- * @retval 字符出现的次数
- */
-size_t str_find_specific(const char* str, const char find_char);
+
+
 
 /**
  * @brief 查看文件可读的长度
  * 
  * @param [in] fd 文件描述符
- * @retval int32_t 可读的长度
+ * @retval 可读的长度
  */
-int32_t fd_readable(ut_fd_t fd);
+int32_t ut_fd_readable(ut_fd_t fd);
 
 /**
  * @brief 清空fd内的所有数据
  * 
  * @param [in] fd 文件描述符
- * @retval int32_t 清除的长度
+ * @retval 清除的长度
  */
-int32_t fd_fflush(ut_fd_t fd);
+int32_t ut_fd_fflush(ut_fd_t fd);
 
 /**
  * @brief 设置fd的阻塞属性
@@ -404,15 +544,15 @@ int32_t fd_fflush(ut_fd_t fd);
  * @param [in] fd 文件描述符
  * @param [in] block 是否阻塞，true阻塞false非阻塞
  */
-void fd_block(ut_fd_t fd, ut_bool_t block);
+void ut_fd_block(ut_fd_t fd, ut_bool_t block);
 
 /**
  * @brief 获取当前终端属性
  * 
  * @param [out] window_size 传出终端属性
- * @return int32_t 
+ * @return 
  */
-int32_t terminal_get(struct winsize* window_size);
+int32_t ut_terminal_get(struct winsize* window_size);
 
 __END_DECLS
 #endif 

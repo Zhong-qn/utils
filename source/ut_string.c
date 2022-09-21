@@ -1,135 +1,106 @@
 /**
- * @file utils.c
+ * @file ut_string.c
  * @author Zhong Qiaoning (691365572@qq.com)
  * @brief 
  * @version 0.1
- * @date 2021-04-22
+ * @date 2022-09-21
  * 
  * @copyright Copyright (c) 2022
  * 
  */
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include "utils.h"
+
+#include <string.h>
+#include "ut.h"
 
 
-
-/*****************************************************/
-/**********************内存申请************************/
-/*****************************************************/
-
-void* zero_alloc(size_t size)
-{
-    return calloc(1, size);
-}
 
 
 /*****************************************************/
 /**************char型字符类型判断***********************/
 /*****************************************************/
 
-/*字符是ASCII码控制字符
-是则返回1，否则返回0*/
-ut_bool_t char_is_ctl(char ch)
+ut_bool_t ut_char_is_ctl(char ch)
 {
-    if ((ch<=0x1f) || (ch==0x7f)) {
+    if ((ch <= 0x1f) || (ch==0x7f)) {
         return UT_TRUE;
     }
     
     return UT_FALSE;
 }
 
-/*字符是ASCII码数字
-是则返回1，否则返回0*/
-ut_bool_t char_is_num(char ch)
+ut_bool_t ut_char_is_num(char ch)
 {
-    if (ch>=0x30 && ch<=0x39) {
+    if (ch >= 0x30 && ch <= 0x39) {
         return UT_TRUE;
     }
 
     return UT_FALSE;
 }
 
-/*字符是16进制数
-是则返回1，否则返回0*/
-ut_bool_t char_is_hex(char ch)
+ut_bool_t ut_char_is_hex(char ch)
 {
-    if ((ch>='0') && (ch<='9')) {
+    if ((ch >= '0') && (ch <= '9')) {
         return UT_TRUE;
     }
-    if ((ch>='a') && (ch<='f')) {
+    if ((ch >= 'a') && (ch <= 'f')) {
         return UT_TRUE;
     }
-    if ((ch>='A') && (ch<='F')) {
+    if ((ch >= 'A') && (ch <= 'F')) {
         return UT_TRUE;
     }
     return UT_FALSE;
 }
 
-/*字符是ASCII码符号
-是则返回1，否则返回0*/
-ut_bool_t char_is_symbol(char ch)
+ut_bool_t ut_char_is_symbol(char ch)
 {
-    if ((ch>=0x20 && ch<=0x2f) 
-         || (ch>=0x3a && ch<=0x40) 
-         || (ch>=0x5b && ch<=0x60) 
-         || (ch>=0x7b && ch<=0x7e)) {
+    if ((ch >= 0x20 && ch <= 0x2f) 
+         || (ch >= 0x3a && ch <= 0x40) 
+         || (ch >= 0x5b && ch <= 0x60) 
+         || (ch >= 0x7b && ch <= 0x7e)) {
         return UT_TRUE;
     }
 
     return UT_FALSE;
 }
 
-/*字符是ASCII码字母
-是则返回1，否则返回0*/
-ut_bool_t char_is_letter(char ch)
+ut_bool_t ut_char_is_letter(char ch)
 {
-    if ((ch>=0x41 && ch<=0x5a) 
-         || (ch>=0x61 && ch<=0x7a)) {
+    if ((ch >= 0x41 && ch <= 0x5a) 
+         || (ch >= 0x61 && ch <= 0x7a)) {
         return UT_TRUE;
     }
 
     return UT_FALSE;
 }
 
-/*字符是大写字母
-是则返回1，否则返回0*/
-ut_bool_t char_is_capital(char ch)
+ut_bool_t ut_char_is_capital(char ch)
 {
-    if (ch >=0x41 && ch <=0x5a) {
+    if (ch >= 0x41 && ch <= 0x5a) {
         return UT_TRUE;
     }
 
     return UT_FALSE;
 }
 
-/*字符是小写字母
-是则返回1，否则返回0*/
-ut_bool_t char_is_lowercase(char ch)
+ut_bool_t ut_char_is_lowercase(char ch)
 {
-    if (ch >=0x61 && ch <=0x7a) {
+    if (ch >= 0x61 && ch <= 0x7a) {
         return UT_TRUE;
     }
 
     return UT_FALSE;
 }
 
-/*字符是ASCII码拓展
-是则返回1，否则返回0*/
-ut_bool_t char_is_expand(char ch)
+ut_bool_t ut_char_is_expand(char ch)
 {
-    if (ch>=0x80) {
+    if (ch >= 0x80 && ch <= 0xff) {
         return UT_TRUE;
     }
 
     return UT_FALSE;
 }
 
-/*字符是空格或tab分隔符
-是则返回1，否则返回0*/
-ut_bool_t char_is_separator(char ch)
+ut_bool_t ut_char_is_separator(char ch)
 {
     if (ch == ASCII_CODE_SP) {
         return UT_TRUE;
@@ -141,39 +112,24 @@ ut_bool_t char_is_separator(char ch)
     return UT_FALSE;
 }
 
-char char_lower(char ch)
+char ut_char_lower(char ch)
 {
     return (ch >= 'A' && ch <= 'Z') ? (ch - 'A' + 'a') : (ch);
 }
 
-char char_upper(char ch)
+char ut_char_upper(char ch)
 {
     return (ch >= 'a' && ch <= 'z') ? (ch + 'A' - 'a') : (ch);
 }
+
+
+
 
 /*****************************************************/
 /*****************字符串处理函数************************/
 /*****************************************************/
 
-size_t str_find_specific(const char* str, const char find_char)
-{
-    const char* pos = str;
-    size_t num = 0;
-    
-    while(*pos != ASCII_CODE_NUL) {
-        if (*pos == '\\') {
-            pos++;
-        } else if (*pos == find_char) {
-            num++;
-        }
-        pos++;
-    }
-    return num;
-}
-
-/*输入的字符串都是数字
-是则返回1，否则返回0*/
-ut_bool_t str_is_num(const char* str)
+ut_bool_t ut_str_is_num(const char* str)
 {
     int32_t pos = 0;
     int32_t point_flag = 0;
@@ -183,7 +139,7 @@ ut_bool_t str_is_num(const char* str)
     }
 
     while (*(str+pos) != ASCII_CODE_NUL) {
-        if (!char_is_num(*(str+pos))) {
+        if (!ut_char_is_num(*(str+pos))) {
             if (!point_flag && *(str+pos) == '.') {
                 point_flag = 1;
             } else {
@@ -196,10 +152,27 @@ ut_bool_t str_is_num(const char* str)
     return UT_TRUE;
 }
 
+int32_t ut_str_is_hex(const char * str)
+{
+    char    ch;
+    int32_t count = 0;
 
-/*字符串str是ip地址
-是则返回0，返回其他数值标识不是ip地址*/
-int32_t str_is_ipv4_addr(const char * str)
+    ch = *(str+count);
+    while (ch != ASCII_CODE_NUL && !ut_char_is_separator(ch)) {
+        if ((ch <= '9' && ch >= '0')
+                || (ut_char_lower(ch) >= 'a' && ut_char_lower(ch) <= 'f')) {
+            ;
+        } else {
+            return count+1;
+        }
+        count++;
+        ch = *(str+count);
+    }
+
+    return 0;
+}
+
+int32_t ut_str_is_ipv4addr(const char * str)
 {
     int32_t count = 0;
     char ip_addr[4]= {0, 0, 0, 0};
@@ -208,9 +181,7 @@ int32_t str_is_ipv4_addr(const char * str)
     char ch = ASCII_CODE_NUL;
     int32_t temp = 0;
 
-    while (char_is_separator(*(str+count++))) {
-        ;
-    }
+    while (ut_char_is_separator(*(str+count++)));
     count--;
 
     ch = *(str+count);
@@ -218,7 +189,7 @@ int32_t str_is_ipv4_addr(const char * str)
         return count+1;
     }
 
-    while (!char_is_separator(ch) && ch) {
+    while (!ut_char_is_separator(ch) && ch) {
         if (ch >= '0' && ch <= '9') {
             if (num_count>=3) {
                 return count+1;
@@ -266,7 +237,7 @@ int32_t str_is_ipv4_addr(const char * str)
         }
     }
     while (ch) {
-        if (!char_is_separator(ch)) {
+        if (!ut_char_is_separator(ch)) {
             return count+1;
         }
         count++;
@@ -275,33 +246,31 @@ int32_t str_is_ipv4_addr(const char * str)
     return 0;
 }
 
-/*字符串str是ip地址
-是则返回0，返回其他数值标识不是ip地址*/
-int32_t str_is_ipv6_addr(const char *string)
+int32_t ut_str_is_ipv6addr(const char *str)
 {
-    int cnt = 0;
-    char ch;
-    int pos = 0;
-    int num = 0;
-    int colon_num = 0;
-    int flag = 0; //标记::
-    int ipv4_flag = 0;
+    int     cnt = 0;
+    char    ch;
+    int     pos = 0;
+    int     num = 0;
+    int     colon_num = 0;
+    int     flag = 0; //标记::
+    int     ipv4_flag = 0;
 
-    while (char_is_separator(*(string+cnt))) {
+    while (ut_char_is_separator(*(str+cnt))) {
         cnt++;
     }
 
-    ch=*(string+cnt);
-    if (ch==0x00) {
+    ch=*(str+cnt);
+    if (ch == 0x00) {
         goto TAG_EXIT;
     }
 
     while(ch) {
-        if (char_is_separator(ch)) {
+        if (ut_char_is_separator(ch)) {
             break;
         }
 
-        if ((ch <= '9' && ch >= '0') || (char_lower(ch) >= 'a' && char_lower(ch) <= 'f')) {
+        if ((ch <= '9' && ch >= '0') || (ut_char_lower(ch) >= 'a' && ut_char_lower(ch) <= 'f')) {
             if (num == 4) {
                 goto TAG_EXIT;
             }
@@ -329,7 +298,7 @@ int32_t str_is_ipv6_addr(const char *string)
         }
 
         cnt++;
-        ch = *(string + cnt);
+        ch = *(str + cnt);
     }
 
     if (!flag) { //ipv6使用冒分16进制表示,未缩写
@@ -344,7 +313,7 @@ int32_t str_is_ipv6_addr(const char *string)
 
     //ipv6内嵌ipv4地址
     if (ipv4_flag == 1) {
-        if (str_is_ipv4_addr(string + pos + 1)) {
+        if (ut_str_is_ipv4addr(str + pos + 1)) {
             goto TAG_EXIT;
         }
     }
@@ -355,20 +324,18 @@ TAG_EXIT:
     return -1;
 }
 
-/*字符串str是mac地址
-是则返回0，返回其他数值标识不是mac地址*/
-int32_t str_is_macaddr(const char * str)
+int32_t ut_str_is_macaddr(const char * str)
 {
 
     int32_t count;
     int32_t num_count;
     int32_t dot_count;
-    char ch;
+    char    ch;
 
     count=0;
     num_count=0;
     dot_count=0;
-    while (char_is_separator(*(str+count++))) {
+    while (ut_char_is_separator(*(str+count++))) {
         ;
     }
     count--;
@@ -376,8 +343,8 @@ int32_t str_is_macaddr(const char * str)
     if (ch==0x00) {
         return count+1;
     }
-    while (!char_is_separator(ch) && ch) {
-        if (char_is_hex(ch)) {
+    while (!ut_char_is_separator(ch) && ch) {
+        if (ut_char_is_hex(ch)) {
             if (num_count>=2) {
                 return count+1;
             } else {
@@ -421,7 +388,7 @@ int32_t str_is_macaddr(const char * str)
     }
 
     while (ch) {
-        if (!char_is_separator(ch)) {
+        if (!ut_char_is_separator(ch)) {
             return count+1;
         }
         count++;
@@ -430,150 +397,206 @@ int32_t str_is_macaddr(const char * str)
     return 0;
 }
 
-/*字符串str是16进制数
-是则返回0，返回其他数值标识不是16进制数*/
-int32_t str_is_hex(const char * str)
+
+
+
+size_t ut_strcnt(const char* str, char ch)
 {
-    int32_t count = 0;
-    char ch;
-
-    ch = *(str+count);
-    while (ch != ASCII_CODE_NUL && !char_is_separator(ch)) {
-        if ((ch <= '9' && ch >= '0')
-                || (char_lower(ch) >= 'a' && char_lower(ch) <= 'f')) {
-            ;
-        } else {
-            return count+1;
+    size_t num = 0;
+    
+    while (*str != ASCII_CODE_NUL) {
+        if (*str == ch) {
+            num++;
         }
-        count++;
-        ch = *(str+count);
+        str++;
     }
-
-    return 0;
+    return num;
 }
 
-size_t strncpy_size(char* dest, const char* src, size_t size)
+size_t ut_strcnt_sp(const char* str, char ch)
 {
-    char* dest_pos = dest;
-    const char* src_pos = src;
+    size_t num = 0;
+    
+    while(*str != ASCII_CODE_NUL) {
+        if (*str == '\\') {
+            str++;
+            if (*str == ASCII_CODE_NUL) {
+                break;
+            }
+        } else if (*str == ch) {
+            num++;
+        }
+        str++;
+    }
+    return num;
+}
+
+
+
+
+size_t ut_strcpy(char* dst, const char* src)
+{
     size_t copied_len = 0;
 
-    if (NULL == dest || NULL == src) {
+    if (NULL == dst || NULL == src) {
         return 0;
     }
 
-    while (*src_pos != ASCII_CODE_NUL) {
+    while (*src != ASCII_CODE_NUL) {
+        *(dst++) = *(src++);
+        copied_len++;
+    }
+
+    return copied_len;
+}
+
+size_t ut_strcpy_char(char* dst, const char* src, char ch)
+{
+    size_t copied_len = 0;
+
+    if (NULL == dst || NULL == src) {
+        return 0;
+    }
+
+    while ((*src != ASCII_CODE_NUL) && (*src != ch)) {
+        *(dst++) = *(src++);
+        copied_len++;
+    }
+
+    return copied_len;
+}
+
+size_t ut_strcpy_char_sp(char* dst, const char* src, char ch)
+{
+    size_t copied_len = 0;
+
+    if (NULL == dst || NULL == src) {
+        return 0;
+    }
+
+    while (*src != ASCII_CODE_NUL) {
+        if (*src == '\\') {
+            *(dst++) = *(src++);
+            copied_len++;
+            if (*src == ASCII_CODE_NUL) {
+                break;
+            }
+        } else if (*src == ch) {
+            break;
+        }
+        *(dst++) = *(src++);
+        copied_len++;
+    }
+
+    return copied_len;
+}
+
+size_t ut_strcpy_ptr(char* dst, const char* src, const char* end)
+{
+    size_t copied_len = 0;
+
+    if (NULL == dst || NULL == src) {
+        return 0;
+    }
+
+    while (src != end && *src != ASCII_CODE_NUL) {
+        *(dst++) = *(src++);
+        copied_len++;
+    }
+
+    return copied_len;
+}
+
+size_t ut_strncpy(char* dst, const char* src, size_t size)
+{
+    size_t copied_len = 0;
+
+    if (NULL == dst || NULL == src) {
+        return 0;
+    }
+
+    while (*src != ASCII_CODE_NUL) {
         if (copied_len >= size) {
             break;
         }
-        *(dest_pos++) = *(src_pos++);
+        *(dst++) = *(src++);
         copied_len++;
     }
 
     return copied_len;
 }
 
-size_t strcpy_size(char* dest, const char* src)
+size_t ut_strncpy_char(char* dst, const char* src, size_t size, char ch)
 {
-    char* dest_pos = dest;
-    const char* src_pos = src;
     size_t copied_len = 0;
 
-    if (NULL == dest || NULL == src) {
+    if (NULL == dst || NULL == src) {
         return 0;
     }
 
-    while (*src_pos != ASCII_CODE_NUL) {
-        *(dest_pos++) = *(src_pos++);
-        copied_len++;
-    }
-
-    return copied_len;
-}
-/*将src复制到dest中，直到src到达行尾或遇到ch为止
-返回复制的长度*/
-size_t strcpy_until_char(char* dest, const char* src, char ch)
-{
-    char* dest_pos = dest;
-    const char* src_pos = src;
-    size_t copied_len = 0;
-
-    if (NULL == dest || NULL == src) {
-        return 0;
-    }
-
-    while ((*src_pos != ASCII_CODE_NUL) && (*src_pos != ch)) {
-        *(dest_pos++) = *(src_pos++);
+    while ((*src != ASCII_CODE_NUL) && (*src != ch)) {
+        if (copied_len >= size) {
+            break;
+        }
+        *(dst++) = *(src++);
         copied_len++;
     }
 
     return copied_len;
 }
 
-size_t strcpy_until_char_specific(char* dest, const char* src, char ch)
+size_t ut_strncpy_char_sp(char* dst, const char* src, size_t size, char ch)
 {
-    char* dest_pos = dest;
-    const char* src_pos = src;
     size_t copied_len = 0;
 
-    if (NULL == dest || NULL == src) {
+    if (NULL == dst || NULL == src) {
         return 0;
     }
 
-    while (*src_pos != ASCII_CODE_NUL) {
-        if (*src_pos == '\\') {
-            *(dest_pos++) = *(src_pos++);
+    while (*src != ASCII_CODE_NUL) {
+        if (copied_len >= size) {
+            break;
+        }
+        if (*src == '\\') {
+            *(dst++) = *(src++);
             copied_len++;
-        } else if (*src_pos == ch) {
+            if (*src == ASCII_CODE_NUL || copied_len >= size) {
+                break;
+            }
+        } else if (*src == ch) {
             break;
         }
-        *(dest_pos++) = *(src_pos++);
+        *(dst++) = *(src++);
         copied_len++;
     }
 
     return copied_len;
 }
 
-ut_bool_t strcpy_delimited_by_space(char* save_buf, const char* analysis_str, uint32_t* pos)
+size_t ut_strncpy_ptr(char* dst, const char* src, size_t size, const char* end)
 {
-    char ch = ASCII_CODE_NUL;
-    int copy_pos = 0;
-    int tmp_pos = *pos;
-    ut_bool_t ret = UT_TRUE;
+    size_t copied_len = 0;
 
-    /*清除命令前的所有空格*/
-    do {
-        ch = *(analysis_str + tmp_pos++);
-        if (!char_is_separator(ch)) {
-            tmp_pos--;
-            break;
-        }
-    }while (ch != ASCII_CODE_NUL);
-
-    /*获取命令字符串中的一组字符*/
-    do {
-        ch = *(analysis_str + tmp_pos++);
-        if (!char_is_separator(ch)) {
-            *(save_buf+copy_pos++) = ch;
-        } else {
-            break;
-        }
-    } while (ASCII_CODE_NUL != ch);
-
-    *(save_buf+copy_pos++) = ASCII_CODE_NUL;
-    
-    if (ch == ASCII_CODE_NUL) {
-        ret = UT_FALSE;
+    if (NULL == dst || NULL == src) {
+        return 0;
     }
 
-    if (strlen(save_buf)) {
-        *pos = tmp_pos;
+    while (src != end && *src != ASCII_CODE_NUL) {
+        if (copied_len >= size) {
+            break;
+        }
+        *(dst++) = *(src++);
+        copied_len++;
     }
 
-    return ret;
+    return copied_len;
 }
 
-size_t strlen_until_char(const char* src, const char ch)
+
+
+
+
+size_t ut_strlen_char(const char* src, char ch)
 {
     size_t size = 0;
     const char* pos = src;
@@ -586,7 +609,7 @@ size_t strlen_until_char(const char* src, const char ch)
     return size;
 }
 
-size_t strlen_until_char_specific(const char* src, const char ch)
+size_t ut_strlen_char_sp(const char* src, char ch)
 {
     size_t size = 0;
 
@@ -604,25 +627,10 @@ size_t strlen_until_char_specific(const char* src, const char ch)
     return size;
 }
 
-size_t strcpy_until_ptr(char* dest, const char* src, const char* end)
-{
-    char* dest_pos = dest;
-    const char* src_pos = src;
-    size_t copied_len = 0;
 
-    if (NULL == dest || NULL == src) {
-        return 0;
-    }
 
-    while (src_pos != end && *src != ASCII_CODE_NUL) {
-        *(dest_pos++) = *(src_pos++);
-        copied_len++;
-    }
 
-    return copied_len;
-}
-
-char* strchr_specific(const char* src, char ch)
+char* ut_strchr_sp(const char* src, char ch)
 {
     char* ret = NULL;
 
@@ -642,7 +650,7 @@ TAG_OUT:
     return ret;
 }
 
-char* strchr_count(const char* src, char ch, int count)
+char* ut_strchr_seq(const char* src, char ch, int seq)
 {
     char* ret = NULL;
 
@@ -650,8 +658,8 @@ char* strchr_count(const char* src, char ch, int count)
 
     while (*src != ASCII_CODE_NUL) {
         if (*src == ch) {
-            if (!(count--)) {
-                ret = (char*)(uintptr_t)src;
+            if (!(seq--)) {
+                ret = (char*)src;
                 break;
             }
         }
@@ -663,7 +671,7 @@ TAG_OUT:
     return ret;
 }
 
-char* strchr_case_brackets(const char* src, char ch)
+char* ut_strchr_brackets(const char* src, char ch)
 {
     int pos = 0;
     int32_t little_flag = 0;
@@ -700,7 +708,7 @@ char* strchr_case_brackets(const char* src, char ch)
             
             default:
                 if ((*(src+pos) == ch) && !little_flag && !middle_flag && !large_flag) {
-                    return (char*)(uintptr_t)(src+pos);
+                    return (char*)(src+pos);
                 }
                 break;
                 
@@ -712,58 +720,3 @@ TAG_OUT:
     return NULL;
 }
 
-
-/*****************************************************/
-/*******************文件处理函数************************/
-/*****************************************************/
-
-int32_t fd_readable(ut_fd_t fd)
-{
-    int32_t read_len = 0;
-
-    /* 获取输入缓冲区大小 */
-    ioctl(fd, FIONREAD, &read_len);
-
-    return read_len;
-}
-
-int32_t fd_fflush(ut_fd_t fd)
-{
-    int32_t     cur_len = 0;
-    int32_t     read_len = 0;
-    char        buf[MAX_RECV_BUF_LEN] = {0};
-
-    /* 获取输入缓冲区内容 */
-    cur_len = fd_readable(fd);
-    read_len += cur_len;
-
-    /* 如果缓冲区中还有内容，则清空。 */
-    while (cur_len != 0) {
-        if (read(fd, &buf, MAX_RECV_BUF_LEN) <= 0) {
-            break;
-        }
-        cur_len = fd_readable(fd);
-        read_len += cur_len;
-    }
-
-    return read_len;
-}
-
-void fd_block(ut_fd_t fd, ut_bool_t block)
-{
-    int32_t     flag = 0;
-
-    flag = fcntl(fd, F_GETFL);
-    if (block) {
-        flag &= ~O_NONBLOCK;
-    } else {
-        flag |= O_NONBLOCK;
-    }
-
-    return ;
-}
-
-int32_t terminal_get(struct winsize* window_size)
-{
-    return ioctl(STDIN_FILENO, TIOCGWINSZ, window_size);
-}
