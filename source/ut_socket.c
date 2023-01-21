@@ -15,9 +15,9 @@
 #include <arpa/inet.h>
 #include <net/if.h>
 
-#include "ut_socket.h"
-#include "ut_hash.h"
-#include "ut_select.h"
+#include "ut/ut_socket.h"
+#include "ut/ut_hash.h"
+#include "ut/ut_select.h"
 
 struct ut_socket_t {
     ut_socket_fd_t         fd;                 /* socket file descriptor */

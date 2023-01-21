@@ -53,7 +53,7 @@ endif()
 
 
 # 设置编译器参数
-set(CMAKE_C_COMPILER "x86_64-linux-gnu-gcc-8")
+# set(CMAKE_C_COMPILER "x86_64-linux-gnu-gcc-8")
 add_compile_options(-g -Wall -Werror)
 
 # 设置include路径
@@ -81,12 +81,12 @@ target_compile_definitions(z_ut_st PRIVATE ENABLE_LOG=)
 target_compile_definitions(z_ut_st PRIVATE LOG_LEVEL=1)
 target_link_libraries(z_ut_st -lpthread)
 
-set(UTILS_INC_SRC   ${UT_DIR}/include/ut.h
-                    ${UT_DIR}/include/ut_hash.h
-                    ${UT_DIR}/include/ut_msg.h
-                    ${UT_DIR}/include/ut_socket.h
-                    ${UT_DIR}/include/ut_pri_queue.h
-                    ${UT_DIR}/include/ut_select.h
+set(UTILS_INC_SRC   ${UT_DIR}/include/ut/ut.h
+                    ${UT_DIR}/include/ut/ut_hash.h
+                    ${UT_DIR}/include/ut/ut_msg.h
+                    ${UT_DIR}/include/ut/ut_socket.h
+                    ${UT_DIR}/include/ut/ut_pri_queue.h
+                    ${UT_DIR}/include/ut/ut_select.h
                     )
 
 foreach(file_i ${UTILS_INC_SRC})

@@ -13,10 +13,10 @@
 #include <pthread.h>
 #include <errno.h>
 #include <string.h>
-#include "ut.h"
-#include "ut_hash.h"
-#include "ut_pri_queue.h"
-#include "ut_select.h"
+#include "ut/ut.h"
+#include "ut/ut_hash.h"
+#include "ut/ut_pri_queue.h"
+#include "ut/ut_select.h"
 
 
 #define PRI_QUEUE_SIZE      50

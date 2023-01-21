@@ -11,7 +11,7 @@
 #include <string.h>
 #include <pthread.h>
 
-#include "ut_pri_queue.h"
+#include "ut/ut_pri_queue.h"
 
 
 typedef struct heap_element {

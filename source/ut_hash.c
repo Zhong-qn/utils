@@ -9,7 +9,7 @@
  * 
  */
 #include <string.h>
-#include "ut_hash.h"
+#include "ut/ut_hash.h"
 
 #define INITIAL_MAX 15 /* 2^n - 1 */
 
